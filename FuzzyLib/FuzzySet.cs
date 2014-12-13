@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FuzzyLib
+﻿namespace FuzzyLib
 {
     public abstract class FuzzySet
     {
-        protected double _degreeOfMembership;
+        private double _degreeOfMembership;
 
         public double MinBound
         {
@@ -24,9 +19,9 @@ namespace FuzzyLib
         // this is the maximum of the set's membership membership function.  For instance,
         // if the set is triangular then this will be the peak point of the triangle.
         // It is calculated at the constructor to avoid run-time calculation of midpoint values.
-        protected double _representativeValue;
+        private readonly double _representativeValue;
 
-        public FuzzySet(double representativeValue, double minBound, double maxBound)
+        protected FuzzySet(double representativeValue, double minBound, double maxBound)
         {
             _degreeOfMembership = 0;
             _representativeValue = representativeValue;
@@ -35,13 +30,13 @@ namespace FuzzyLib
             MaxBound = maxBound;
         }
 
-        abstract public double CalculateDegreeOfMovement(double value);
+        abstract public double CalculateDegreeOfMembership(double value);
 
         //if this fuzzy set is part of a consequent FLV, and it is fired by a rule 
         //then this method sets the DOM (in this context, the DOM represents a
         //confidence level)to the maximum of the parameter value or the set's 
         //existing m_dDOM value
-        public void MergeWithDegreeOfMovement(double value)
+        public void MergeWithDegreeOfMembership(double value)
         {
             if (value > _degreeOfMembership)
                 _degreeOfMembership = value;

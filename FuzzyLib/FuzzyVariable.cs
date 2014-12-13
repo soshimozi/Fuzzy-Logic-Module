@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
     public class FuzzyVariable
     {
-        private Dictionary<string, FuzzySet> _memberSets = new Dictionary<string,FuzzySet>();
+        private readonly Dictionary<string, FuzzySet> _memberSets = new Dictionary<string,FuzzySet>();
 
-        private double _minimumRange = 0;
-        private double _maximumRange = 0;
+        private double _minimumRange;
+        private double _maximumRange;
 
         //this method is called with the upper and lower bound of a set each time a
         //new set is added to adjust the upper and lower range values accordingly
@@ -20,13 +18,13 @@ namespace FuzzyLib
             _maximumRange = Math.Max(max, _maximumRange);
         }
 
-        public FuzzySetProxy AddFuzzySet(
+        public FuzzySetTerm AddFuzzySet(
             string name, 
             FuzzySet set)
         {
             _memberSets.Add(name, set);
             AdjustRangeToFit(set.MinBound, set.MaxBound);
-            return FuzzySetProxy.CreateProxyForSet(set);
+            return FuzzySetTerm.CreateProxyForSet(set);
         }
 
         //fuzzify a value by calculating its DOM in each of this variable's subsets
@@ -39,7 +37,7 @@ namespace FuzzyLib
             //for each set in the flv calculate the DOM for the given value
             foreach (FuzzySet set in _memberSets.Values)
             {
-                set.DegreeOfMembership = set.CalculateDegreeOfMovement(value);
+                set.DegreeOfMembership = set.CalculateDegreeOfMembership(value);
             }
         }
 
@@ -56,7 +54,7 @@ namespace FuzzyLib
             }
 
             //make sure bottom is not equal to zero
-            if (bottom == 0) { return 0; }
+            if (Math.Abs(bottom) < double.Epsilon) { return 0; }
 
             return top / bottom;  
         }
@@ -65,7 +63,7 @@ namespace FuzzyLib
         public double DeFuzzifyCentroid(int numSamples)
         {
             //calculate the step size
-            double stepSize = (_maximumRange - _minimumRange) / (double)numSamples;
+            double stepSize = (_maximumRange - _minimumRange) / numSamples;
 
             double totalArea = 0.0;
             double sumOfMoments = 0.0;
@@ -88,15 +86,15 @@ namespace FuzzyLib
                 foreach (FuzzySet set in _memberSets.Values)
                 {
                     double contribution
-                        = Math.Min(set.CalculateDegreeOfMovement(_minimumRange + (double)samp * stepSize), set.DegreeOfMembership);
+                        = Math.Min(set.CalculateDegreeOfMembership(_minimumRange + samp * stepSize), set.DegreeOfMembership);
 
                     totalArea += contribution;
-                    sumOfMoments += (_minimumRange + (double)samp * stepSize) * contribution;
+                    sumOfMoments += (_minimumRange + samp * stepSize) * contribution;
                 }
             }
 
             //make sure total area is not equal to zero
-            if (totalArea == 0) { return 0; }
+            if (Math.Abs(totalArea) < double.Epsilon) { return 0; }
 
             return (sumOfMoments / totalArea);
         }

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
     public class LeftShoulderFuzzySet : FuzzySet
     {
         //the values that define the shape of this FLV
-        double _peakPoint;
-        double _rightOffset;
-        double _leftOffset;
+        readonly double _peakPoint;
+        readonly double _rightOffset;
+        readonly double _leftOffset;
 
         public LeftShoulderFuzzySet(double min,
                               double peak,
@@ -22,35 +19,32 @@ namespace FuzzyLib
             _rightOffset = (max - peak);
         }
 
-        public override double CalculateDegreeOfMovement(double value)
+        public override double CalculateDegreeOfMembership(double value)
         {
             //test for the case where the left or right offsets are zero
             //(to prevent divide by zero errors below)
-            if ( (_rightOffset == 0 && _peakPoint == value) ||
-                 (_leftOffset == 0 && _peakPoint == value))
+            if ((Math.Abs(_rightOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon) ||
+                 (Math.Abs(_leftOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon))
             {
                 return 1.0;
             }
 
             //find DOM if right of center
-            else if ((value >= _peakPoint) && (value < (_peakPoint + _rightOffset)))
+            if ((value >= _peakPoint) && (value < (_peakPoint + _rightOffset)))
             {
-                double grad = 1.0 / -_rightOffset;
+                var grad = 1.0 / -_rightOffset;
 
                 return grad * (value - _peakPoint) + 1.0;
             }
 
-            //find DOM if left of center
-            else if ((value < _peakPoint) && (value >= _peakPoint - _leftOffset))
+                //find DOM if left of center
+            if ((value < _peakPoint) && (value >= _peakPoint - _leftOffset))
             {
                 return 1.0;
             }
 
-            //out of range of this FLV, return zero
-            else
-            {
-                return 0.0;
-            }
+                //out of range of this FLV, return zero
+            return 0.0;
         }
     }
 }

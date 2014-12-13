@@ -25,11 +25,11 @@ namespace FuzzyLib
             }
         }
 
-        public override void ClearDegreOfMembership()
+        public override void ClearDegreeOfMembership()
         {
             foreach (var term in _terms)
             {
-                term.ClearDegreOfMembership();
+                term.ClearDegreeOfMembership();
             }
         }
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
@@ -9,9 +6,9 @@ namespace FuzzyLib
     public class TriangleFuzzySet : FuzzySet
     {
         //the values that define the shape of this FLV
-        public double _peakPoint;
-        public double _leftOffset;
-        public double _rightOffset;
+        private readonly double _peakPoint;
+        private readonly double _leftOffset;
+        private readonly double _rightOffset;
 
         public TriangleFuzzySet(double min,
                             double peak,
@@ -23,35 +20,32 @@ namespace FuzzyLib
             _rightOffset = max - peak;
         }
 
-        public override double CalculateDegreeOfMovement(double value)
+        public override double CalculateDegreeOfMembership(double value)
         {
             //test for the case where the triangle's left or right offsets are zero
             //(to prevent divide by zero errors below)
-            if ((_rightOffset == 0 && _peakPoint == value) ||
-                 (_leftOffset == 0 && _peakPoint == value))
+            if ((Math.Abs(_rightOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon) ||
+                 (Math.Abs(_leftOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon))
             {
                 return 1.0;
             }
 
+            double grad;
+
             //find DOM if left of center
             if ((value <= _peakPoint) && (value >= (_peakPoint - _leftOffset)))
             {
-                double grad = 1.0 / _leftOffset;
+                grad = 1.0 / _leftOffset;
 
                 return grad * (value - (_peakPoint - _leftOffset));
             }
-            //find DOM if right of center
-            else if ((value > _peakPoint) && (value < (_peakPoint + _rightOffset)))
-            {
-                double grad = 1.0 / -_rightOffset;
 
-                return grad * (value - _peakPoint) + 1.0;
-            }
             //out of range of this FLV, return zero
-            else
-            {
-                return 0.0;
-            }
-          }
+            if ((!(value > _peakPoint)) || (!(value < (_peakPoint + _rightOffset)))) return 0.0;
+
+            //find DOM if right of center
+            grad = 1.0 / -_rightOffset;
+            return grad * (value - _peakPoint) + 1.0;
+        }
     }
 }

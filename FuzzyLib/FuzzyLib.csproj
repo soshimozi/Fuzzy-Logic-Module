@@ -49,7 +49,7 @@
     <Compile Include="FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
     <Compile Include="FuzzySet.cs" />
-    <Compile Include="FuzzySetProxy.cs" />
+    <Compile Include="FuzzySetTerm.cs" />
     <Compile Include="FuzzyTermWrapper.cs" />
     <Compile Include="FuzzyVariableReference.cs" />
     <Compile Include="LamdaExtensions.cs" />

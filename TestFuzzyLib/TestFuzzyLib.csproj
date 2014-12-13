@@ -43,7 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDynamicProxy.cs" />
+    <Compile Include="Enemy.cs" />
+    <Compile Include="IEnemy.cs" />
+    <Compile Include="ObservableAttribute.cs" />
+    <Compile Include="ObservableDynamicProxy.cs" />
+    <Compile Include="ObservableObject.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

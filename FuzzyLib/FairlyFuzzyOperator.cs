@@ -16,9 +16,9 @@ namespace FuzzyLib
             get { return Math.Sqrt(_term.DegreeOfMembership); }
         }
 
-        public override void ClearDegreOfMembership()
+        public override void ClearDegreeOfMembership()
         {
-            _term.ClearDegreOfMembership();
+            _term.ClearDegreeOfMembership();
         }
 
         public override void MergeWithDOM(double value)

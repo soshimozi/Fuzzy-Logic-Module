@@ -41,9 +41,9 @@
             get { return _wrapped.DegreeOfMembership; }
         }
 
-        public override void ClearDegreOfMembership()
+        public override void ClearDegreeOfMembership()
         {
-            _wrapped.ClearDegreOfMembership();
+            _wrapped.ClearDegreeOfMembership();
         }
 
         public override void MergeWithDOM(double value)

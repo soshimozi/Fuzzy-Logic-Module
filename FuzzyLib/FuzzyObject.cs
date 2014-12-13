@@ -1,18 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace FuzzyLib
 {
+    public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : INotifyPropertyChanged
+    {
+        public ObservableFuzzyObject(T obj) : base(obj)
+        {
+        }
+    }
+
     public class FuzzyObject<T> //: DynamicObject
     {
         private readonly FuzzyModule _module;
         private readonly T _wrappedObject;
 
         private readonly Dictionary<string, FuzzyVariableReference> _variableReferences = new Dictionary<string, FuzzyVariableReference>();
-        private readonly Dictionary<string, FuzzySetProxy> _fuzySets = new Dictionary<string, FuzzySetProxy>(); 
+        private readonly Dictionary<string, FuzzySetTerm> _fuzySets = new Dictionary<string, FuzzySetTerm>(); 
 
         public FuzzyObject(T obj)
         {
@@ -141,9 +149,9 @@ namespace FuzzyLib
             return this;
         }
 
-        public FuzzyTermWrapper<FuzzySetProxy> WrapSet(string name)
+        public FuzzyTermWrapper<FuzzySetTerm> WrapSet(string name)
         {
-            return _fuzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetProxy>(_fuzySets[name]) : null;
+            return _fuzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetTerm>(_fuzySets[name]) : null;
         }
 
         public FuzzyTermWrapper<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
@@ -178,12 +186,12 @@ namespace FuzzyLib
             return this;
         }
 
-        public FuzzySetProxy this[string name]
+        public FuzzySetTerm this[string name]
         {
             get { return FuzzyTerm(name); }
         }
 
-        public FuzzySetProxy FuzzyTerm(string name)
+        public FuzzySetTerm FuzzyTerm(string name)
         {
             return _fuzySets.ContainsKey(name) ? _fuzySets[name] : null;
         }
@@ -232,18 +240,6 @@ namespace FuzzyLib
 
             var defuzzy = _module.DeFuzzify(pi.Name, method);
             pi.SetValue(_wrappedObject, defuzzy, null);
-            //var pi = func.GetPropertyInfo();
-            //double? fuzzy = null;
-
-            //try
-            //{
-            //    fuzzy = (double) pi.GetValue(_wrappedObject, null);
-            //}
-            //catch (Exception)
-            //{
-            //}
-
-            //var propertyValue = (TProp)pi.GetValue(_wrappedObject, null);
         }
 
         public void Fuzzify<TProp>(Expression<Func<T, TProp>> func, TProp value)
@@ -266,7 +262,7 @@ namespace FuzzyLib
 
         public dynamic GetDynamic()
         {
-            return new DynamicWrapper<FuzzySetProxy>(_fuzySets);
+            return new DynamicWrapper<FuzzySetTerm>(_fuzySets);
         }
     }
 }

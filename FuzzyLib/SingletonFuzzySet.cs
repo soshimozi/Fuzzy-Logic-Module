@@ -1,30 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FuzzyLib
+﻿namespace FuzzyLib
 {
     public class SingletonFuzzySet : FuzzySet
     {
         //the values that define the shape of this FLV
-        private double m_dMidPoint;
-        private double m_dLeftOffset;
-        private double m_dRightOffset;
+        private readonly double _midPoint;
+        private readonly double _leftOffset;
+        private readonly double _rightOffset;
 
-        public override double CalculateDegreeOfMovement(double value)
+        public override double CalculateDegreeOfMembership(double value)
         {
-            if ((value >= m_dMidPoint - m_dLeftOffset) &&
-                 (value <= m_dMidPoint + m_dRightOffset))
+            if ((value >= _midPoint - _leftOffset) &&
+                 (value <= _midPoint + _rightOffset))
             {
                 return 1.0;
             }
 
             //out of range of this FLV, return zero
-            else
-            {
-                return 0.0;
-            }
+            return 0.0;
         }
 
 
@@ -33,9 +25,9 @@ namespace FuzzyLib
                              double max)
             : base(peak, min, max)
         {
-            m_dMidPoint = peak;
-            m_dLeftOffset = peak - min;
-            m_dRightOffset = max - peak;
+            _midPoint = peak;
+            _leftOffset = peak - min;
+            _rightOffset = max - peak;
         }
     }
 }

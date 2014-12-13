@@ -1,44 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
     public class RightShoulderFuzzySet : FuzzySet
     {
         //the values that define the shape of this FLV
-        public double m_dPeakPoint;
-        public double m_dLeftOffset;
-        public double m_dRightOffset;
+        private readonly double _peakPoint;
+        private readonly double _leftOffset;
+        private readonly double _rightOffset;
 
-        public override double CalculateDegreeOfMovement(double value)
+        public override double CalculateDegreeOfMembership(double value)
         {
             //test for the case where the left or right offsets are zero
             //(to prevent divide by zero errors below)
-            if ((m_dRightOffset == 0 && m_dPeakPoint == value) ||
-                 (m_dLeftOffset == 0 && m_dPeakPoint == value))
+            if ((Math.Abs(_rightOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon) ||
+                 (Math.Abs(_leftOffset) < double.Epsilon && Math.Abs(_peakPoint - value) < double.Epsilon))
             {
                 return 1.0;
             }
 
             //find DOM if left of center
-            else if ((value <= m_dPeakPoint) && (value > (m_dPeakPoint - m_dLeftOffset)))
+            if ((value <= _peakPoint) && (value > (_peakPoint - _leftOffset)))
             {
-                double grad = 1.0 / m_dLeftOffset;
+                double grad = 1.0 / _leftOffset;
 
-                return grad * (value - (m_dPeakPoint - m_dLeftOffset));
+                return grad * (value - (_peakPoint - _leftOffset));
             }
-            //find DOM if right of center and less than center + right offset
-            else if ((value > m_dPeakPoint) && (value <= m_dPeakPoint + m_dRightOffset))
+                //find DOM if right of center and less than center + right offset
+            if ((value > _peakPoint) && (value <= _peakPoint + _rightOffset))
             {
                 return 1.0;
             }
 
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         public RightShoulderFuzzySet(double min,
@@ -46,9 +40,9 @@ namespace FuzzyLib
                                double max)
             : base(((peak + (max - peak)) + peak) / 2, min, max)
         {
-            m_dPeakPoint = peak;
-            m_dLeftOffset = peak - min;
-            m_dRightOffset = max - peak;
+            _peakPoint = peak;
+            _leftOffset = peak - min;
+            _rightOffset = max - peak;
         }
 
     }

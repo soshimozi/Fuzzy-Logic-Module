@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
@@ -14,7 +11,7 @@ namespace FuzzyLib
         }
 
         //clears the degree of membership of the term
-        public abstract void ClearDegreOfMembership();
+        public abstract void ClearDegreeOfMembership();
 
         //method for updating the DOM of a consequent when a rule fires
         public abstract void MergeWithDOM(double value);
