@@ -1,6 +1,6 @@
 ﻿namespace FuzzyLib
 {
-    public class FuzzyTermWrapper<TFuzzyTerm> where TFuzzyTerm : FuzzyTerm
+    public class FuzzyTermWrapper<TFuzzyTerm> : FuzzyTerm where TFuzzyTerm : FuzzyTerm
     {
         private readonly TFuzzyTerm _wrapped;
 
@@ -16,24 +16,44 @@
             return new FuzzyTermWrapper<TFuzzyTerm>(towrap);
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorAND> And(FuzzyTerm term)
+        public FuzzyTermWrapper<FuzzyOperatorAnd> And(FuzzyTerm term)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorAND>(FuzzyOperator.And(_wrapped, term));
+            return new FuzzyTermWrapper<FuzzyOperatorAnd>(FuzzyOperator.And(_wrapped, term));
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorAND> And<TTerm>(FuzzyTermWrapper<TTerm> term) where TTerm : FuzzyTerm
+        public FuzzyTermWrapper<FuzzyOperatorOr> Or(FuzzyTerm term)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorAND>(FuzzyOperator.And(_wrapped, term.Wrapped));
+            return new FuzzyTermWrapper<FuzzyOperatorOr>(FuzzyOperator.Or(_wrapped, term));
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorOR> Or(FuzzyTerm term)
+        public FuzzyTermWrapper<FairlyFuzzyOperator> Fairly()
         {
-            return new FuzzyTermWrapper<FuzzyOperatorOR>(FuzzyOperator.Or(_wrapped, term));
+            return new FuzzyTermWrapper<FairlyFuzzyOperator>(FuzzyOperator.Fairly(this));
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorOR> Or<TTerm>(FuzzyTermWrapper<TTerm> term) where TTerm : FuzzyTerm
+        public FuzzyTermWrapper<VeryFuzzyOperator> Very()
         {
-            return new FuzzyTermWrapper<FuzzyOperatorOR>(FuzzyOperator.Or(_wrapped, term.Wrapped));
+            return new FuzzyTermWrapper<VeryFuzzyOperator>(FuzzyOperator.Very(this));
+        }
+
+        public override double DegreeOfMembership
+        {
+            get { return _wrapped.DegreeOfMembership; }
+        }
+
+        public override void ClearDegreOfMembership()
+        {
+            _wrapped.ClearDegreOfMembership();
+        }
+
+        public override void MergeWithDOM(double value)
+        {
+            _wrapped.MergeWithDOM(value);
+        }
+
+        public override object Clone()
+        {
+            return _wrapped.Clone();
         }
     }
 }

@@ -1,37 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
     public class FairlyFuzzyOperator : FuzzyTerm
     {
-        private FuzzySet m_Set;
+        private readonly FuzzyTerm _term;
 
-        public FairlyFuzzyOperator(FuzzySetProxy proxy)
+        public FairlyFuzzyOperator(FuzzyTerm term)
         {
-            m_Set = proxy.Set;
+            _term = term;
         }
 
         public override double DegreeOfMembership
         {
-            get { return Math.Sqrt(m_Set.DegreeOfMembership); }
+            get { return Math.Sqrt(_term.DegreeOfMembership); }
         }
 
         public override void ClearDegreOfMembership()
         {
-            m_Set.Clear();
+            _term.ClearDegreOfMembership();
         }
 
         public override void MergeWithDOM(double value)
         {
-            m_Set.MergeWithDegreeOfMovement(Math.Sqrt(value));
+            _term.MergeWithDOM(Math.Sqrt(value));
         }
 
         public override object Clone()
         {
-            return new FairlyFuzzyOperator(FuzzySetProxy.CreateProxyForSet(m_Set));
+            return new FairlyFuzzyOperator(_term.Clone() as FuzzyTerm);
         }
     }
 }

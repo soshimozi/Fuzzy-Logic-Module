@@ -1,47 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
-    public class FuzzyOperatorOR : FuzzyTerm
+    public class FuzzyOperatorOr : FuzzyTerm
     {
         //an instance of this class may AND together up to 4 terms
-        List<FuzzyTerm> m_Terms = new List<FuzzyTerm>();
+        readonly List<FuzzyTerm> _terms = new List<FuzzyTerm>();
 
-        public FuzzyOperatorOR(params FuzzyTerm[] terms)
+        public FuzzyOperatorOr(params FuzzyTerm[] terms)
         {
-            // TODO: Complete member initialization
-            foreach (FuzzyTerm term in terms)
+            foreach (var term in terms)
             {
-                m_Terms.Add(term.Clone() as FuzzyTerm);
+                _terms.Add(term.Clone() as FuzzyTerm);
             }
         }
 
         public override double DegreeOfMembership
         {
-            get 
+            get
             {
-                return (System.Nullable<double>)
-                    (from term in m_Terms
-                     select term.DegreeOfMembership).Max() ?? double.MinValue;
+                return
+                    (from term in _terms
+                        select term.DegreeOfMembership).Max();
             }
         }
 
         public override void ClearDegreOfMembership()
         {
-            throw new NotImplementedException();
+            foreach (var term in _terms)
+            {
+                term.ClearDegreOfMembership();
+            }
+
         }
 
         public override void MergeWithDOM(double value)
         {
-            throw new NotImplementedException();
+            foreach (var term in _terms)
+            {
+                term.MergeWithDOM(value);
+            }
         }
 
         public override object Clone()
         {
-            return new FuzzyOperatorOR(m_Terms.ToArray());
+            return new FuzzyOperatorOr(_terms.Select(term => term.Clone() as FuzzyTerm).ToArray());
         }
     }
 }

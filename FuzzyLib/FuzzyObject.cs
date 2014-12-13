@@ -141,47 +141,30 @@ namespace FuzzyLib
             return this;
         }
 
-        public FuzzyTermWrapper<FuzzySetProxy> WrapSet(FuzzySetProxy set)
-        {
-            return new FuzzyTermWrapper<FuzzySetProxy>(set);
-        }
-
         public FuzzyTermWrapper<FuzzySetProxy> WrapSet(string name)
         {
             return _fuzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetProxy>(_fuzySets[name]) : null;
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorAND> And(FuzzyTerm lhs, FuzzyTerm rhs)
+        public FuzzyTermWrapper<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorAND>(FuzzyOperator.And(lhs, rhs));
+            return new FuzzyTermWrapper<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorOR> Or(FuzzyTerm lhs, FuzzyTerm rhs)
+        public FuzzyTermWrapper<FuzzyOperatorOr> Or(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorOR>(FuzzyOperator.Or(lhs, rhs));
+            return new FuzzyTermWrapper<FuzzyOperatorOr>(FuzzyOperator.Or(lhs, rhs));
         }
 
-        //public FuzzyModule Module { get { return _module; } }
+        public FuzzyTermWrapper<FairlyFuzzyOperator> Fairly(FuzzyTerm term)
+        {
+            return new FuzzyTermWrapper<FairlyFuzzyOperator>(FuzzyOperator.Fairly(term));
+        }
 
-
-
-        //public override bool TryGetMember(GetMemberBinder binder, out object result)
-        //{
-        //    var name = binder.Name;
-
-        //    FuzzySetProxy proxy;
-        //    var retval = _fuzySets.TryGetValue(name, out proxy);
-
-        //    result = proxy;
-
-        //    return retval;
-        //}
-
-        //public override bool TrySetMember(
-        //     SetMemberBinder binder, object value)
-        //{
-        //    return false;
-        //}
+        public FuzzyTermWrapper<VeryFuzzyOperator> Very(FuzzyTerm term)
+        {
+            return new FuzzyTermWrapper<VeryFuzzyOperator>(FuzzyOperator.Very(term));
+        }
 
         public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
         {
@@ -195,21 +178,20 @@ namespace FuzzyLib
             return this;
         }
 
-        public FuzzyTerm this[string name]
+        public FuzzySetProxy this[string name]
         {
             get { return FuzzyTerm(name); }
         }
 
-        public FuzzyTerm FuzzyTerm(string name)
+        public FuzzySetProxy FuzzyTerm(string name)
         {
-            return _fuzySets.ContainsKey(name) ? (FuzzyTerm)_fuzySets[name] : null;
+            return _fuzySets.ContainsKey(name) ? _fuzySets[name] : null;
         }
 
         /// <summary>
         /// Defines a variable for the property specified by the <paramref name="name"/> parameter
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="value"></param>
         /// <returns>FuzzyVariable</returns>
         public FuzzyVariable DefineVariable(string name)
         {

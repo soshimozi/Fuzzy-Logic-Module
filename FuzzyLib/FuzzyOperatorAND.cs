@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FuzzyLib
 {
-    public class FuzzyOperatorAND : FuzzyTerm
+    public class FuzzyOperatorAnd : FuzzyTerm
     {
         //an instance of this class may AND together up to 4 terms
-        private List<FuzzyTerm> _terms = new List<FuzzyTerm>();
+        private readonly List<FuzzyTerm> _terms = new List<FuzzyTerm>();
 
-        public FuzzyOperatorAND(params FuzzyTerm[] terms)
+        public FuzzyOperatorAnd(params FuzzyTerm[] terms)
         {
-            foreach (FuzzyTerm term in terms)
+            foreach (var term in terms)
             {
                 _terms.Add(term.Clone() as FuzzyTerm);
             }
@@ -22,15 +20,14 @@ namespace FuzzyLib
         {
             get
             {
-                return (System.Nullable<double>)
-                    (from term in _terms
-                     select term.DegreeOfMembership).Min() ?? double.MaxValue;
+                return (from term in _terms
+                    select term.DegreeOfMembership).Min();
             }
         }
 
         public override void ClearDegreOfMembership()
         {
-            foreach (FuzzyTerm term in _terms)
+            foreach (var term in _terms)
             {
                 term.ClearDegreOfMembership();
             }
@@ -38,7 +35,7 @@ namespace FuzzyLib
 
         public override void MergeWithDOM(double value)
         {
-            foreach (FuzzyTerm term in _terms)
+            foreach (var term in _terms)
             {
                 term.MergeWithDOM(value);
             }
@@ -46,14 +43,7 @@ namespace FuzzyLib
 
         public override object Clone()
         {
-
-            List<FuzzyTerm> terms = new List<FuzzyTerm>();
-            foreach (FuzzyTerm term in _terms)
-            {
-                terms.Add(term.Clone() as FuzzyTerm);
-            }
-
-            return new FuzzyOperatorAND(terms.ToArray());
+            return new FuzzyOperatorAnd(_terms.Select(term => term.Clone() as FuzzyTerm).ToArray());
         }
     }
 }

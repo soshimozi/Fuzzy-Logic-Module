@@ -1,21 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-
-namespace FuzzyLib
+﻿namespace FuzzyLib
 {
     public static class FuzzyOperator
     {
-        public static FuzzyOperatorAND And(FuzzyTerm lhs, FuzzyTerm rhs)
+        /* binary operations */
+        public static FuzzyOperatorAnd And(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyOperatorAND(lhs, rhs);
+            return new FuzzyOperatorAnd(lhs, rhs);
         }
 
-        public static FuzzyOperatorOR Or(FuzzyTerm lhs, FuzzyTerm rhs)
+        public static FuzzyOperatorOr Or(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyOperatorOR(lhs, rhs);
+            return new FuzzyOperatorOr(lhs, rhs);
         }
+
+        /* unary operations */
+        public static FairlyFuzzyOperator Fairly(FuzzyTerm term)
+        {
+            return new FairlyFuzzyOperator(term);
+        }
+
+        public static VeryFuzzyOperator Very(FuzzyTerm term)
+        {
+            return new VeryFuzzyOperator(term);
+        }
+
     }
 }
