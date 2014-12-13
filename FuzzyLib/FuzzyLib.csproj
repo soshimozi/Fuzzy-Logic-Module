@@ -40,13 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicWrapper.cs" />
     <Compile Include="FairlyFuzzyOperator.cs" />
     <Compile Include="FuzzyModule.cs" />
+    <Compile Include="FuzzyObject.cs" />
+    <Compile Include="FuzzyOperator.cs" />
     <Compile Include="FuzzyOperatorAND.cs" />
     <Compile Include="FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
     <Compile Include="FuzzySet.cs" />
     <Compile Include="FuzzySetProxy.cs" />
+    <Compile Include="FuzzyTermWrapper.cs" />
+    <Compile Include="FuzzyVariableReference.cs" />
+    <Compile Include="LamdaExtensions.cs" />
     <Compile Include="SingletonFuzzySet.cs" />
     <Compile Include="FuzzyTerm.cs" />
     <Compile Include="FuzzyVariable.cs" />

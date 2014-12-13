@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace FuzzyLib
@@ -20,7 +21,7 @@ namespace FuzzyLib
         //zeros the DOMs of the consequents of each rule. Used by Defuzzify()
         private void SetConfidencesOfConsequentsToZero()
         {
-            foreach(FuzzyRule rule in m_Rules)
+            foreach (FuzzyRule rule in m_Rules)
             {
                 rule.SetConfidenceOfConsequentToZero();
             }
@@ -47,8 +48,32 @@ namespace FuzzyLib
 
         //given a fuzzy variable and a deffuzification method this returns a 
         //crisp value
-        public double DeFuzzify(string key,
-                                  DefuzzifyMethod method = DefuzzifyMethod.MAX_AV)
+        //public double DeFuzzify(string key, 
+        //                          DefuzzifyMethod method = DefuzzifyMethod.MAX_AV)
+        //{
+        //    //clear the DOMs of all the consequents of all the rules
+        //    SetConfidencesOfConsequentsToZero();
+
+        //    //process the rules
+        //    foreach (FuzzyRule curRule in m_Rules)
+        //    {
+        //        curRule.Calculate();
+        //    }
+
+        //    //now defuzzify the resultant conclusion using the specified method
+        //    switch (method)
+        //    {
+        //        case DefuzzifyMethod.CENTROID:
+        //            return m_Variables[key].DeFuzzifyCentroid(NumSamples);
+
+        //        case DefuzzifyMethod.MAX_AV:
+        //            return m_Variables[key].DeFuzzifyMaxAv();
+        //    }
+
+        //    return 0;
+        //}
+
+        public double DeFuzzify(string key, Expression<Func<FuzzyVariable, double>> method)
         {
             //clear the DOMs of all the consequents of all the rules
             SetConfidencesOfConsequentsToZero();
@@ -59,26 +84,19 @@ namespace FuzzyLib
                 curRule.Calculate();
             }
 
-            //now defuzzify the resultant conclusion using the specified method
-            switch (method)
-            {
-                case DefuzzifyMethod.CENTROID:
-                    return m_Variables[key].DeFuzzifyCentroid(NumSamples);
-
-                case DefuzzifyMethod.MAX_AV:
-                    return m_Variables[key].DeFuzzifyMaxAv();
-            }
-
-            return 0;
+            var gen = method.Compile();
+            return gen.Invoke(m_Variables[key]);
         }
-
     }
 
-    //you must pass one of these values to the defuzzify method. This module
+
+
+
+//you must pass one of these values to the defuzzify method. This module
     //only supports the MaxAv and centroid methods.
-    public enum DefuzzifyMethod 
-    { 
-        MAX_AV, 
-        CENTROID
-    }
+    //public enum DefuzzifyMethod 
+    //{ 
+    //    MAX_AV, 
+    //    CENTROID
+    //}
 }
