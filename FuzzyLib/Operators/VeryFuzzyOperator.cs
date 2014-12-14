@@ -1,19 +1,19 @@
-﻿using System;
+﻿using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Operators
 {
-    public class FairlyFuzzyOperator : FuzzyTerm
+    public class VeryFuzzyOperator : FuzzyTerm
     {
         private readonly FuzzyTerm _term;
 
-        public FairlyFuzzyOperator(FuzzyTerm term)
+        public VeryFuzzyOperator(FuzzyTerm term)
         {
             _term = term;
         }
 
         public override double DegreeOfMembership
         {
-            get { return Math.Sqrt(_term.DegreeOfMembership); }
+            get { return _term.DegreeOfMembership * _term.DegreeOfMembership; }
         }
 
         public override void ClearDegreeOfMembership()
@@ -23,12 +23,12 @@ namespace FuzzyLib
 
         public override void MergeWithDOM(double value)
         {
-            _term.MergeWithDOM(Math.Sqrt(value));
+            _term.MergeWithDOM(value * value);
         }
 
         public override object Clone()
         {
-            return new FairlyFuzzyOperator(_term.Clone() as FuzzyTerm);
+            return new VeryFuzzyOperator(_term.Clone() as FuzzyTerm);
         }
     }
 }

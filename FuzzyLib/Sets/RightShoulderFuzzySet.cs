@@ -1,6 +1,7 @@
 ﻿using System;
+using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Sets
 {
     public class RightShoulderFuzzySet : FuzzySet
     {
@@ -8,6 +9,18 @@ namespace FuzzyLib
         private readonly double _peakPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
+        private double _max;
+        private double _min;
+
+        public override double GetMinBound()
+        {
+            return _min;
+        }
+
+        public override double GetMaxBound()
+        {
+            return _max;
+        }
 
         public override double CalculateDegreeOfMembership(double value)
         {
@@ -38,8 +51,10 @@ namespace FuzzyLib
         public RightShoulderFuzzySet(double min,
                                double peak,
                                double max)
-            : base(((peak + (max - peak)) + peak) / 2, min, max)
+            : base(((peak + (max - peak)) + peak) / 2)
         {
+            _min = min;
+            _max = max;
             _peakPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Operators
 {
     public class FuzzyOperatorOr : FuzzyTerm
     {

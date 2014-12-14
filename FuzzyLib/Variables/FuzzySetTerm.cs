@@ -1,4 +1,4 @@
-﻿namespace FuzzyLib
+﻿namespace FuzzyLib.Variables
 {
     public class FuzzySetTerm : FuzzyTerm
     {

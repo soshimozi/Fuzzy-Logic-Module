@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FuzzyLib.Decorator;
+using FuzzyLib.Infrastructure;
+using FuzzyLib.Operators;
+using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Object
 {
     public class FuzzyObject<T>
     {
@@ -12,13 +16,20 @@ namespace FuzzyLib
         protected readonly T WrappedObject;
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
-        protected readonly Dictionary<string, FuzzySetTerm> FuzzySets = new Dictionary<string, FuzzySetTerm>(); 
 
-        public FuzzyObject(T obj)
+        protected readonly Dictionary<string, FuzzySetTerm> FuzzySets = new Dictionary<string, FuzzySetTerm>();
+
+        public FuzzyObject(T obj, FuzzyModule module)
         {
             WrappedObject = obj;
-            Module = new FuzzyModule();
+            Module = module;
         }
+
+        //public FuzzyObject(T obj)
+        //{
+        //    WrappedObject = obj;
+        //    Module = new FuzzyModule();
+        //}
 
         public FuzzyObject<T> Compile<T1>(Expression<Func<T, T1>> func)
         {
@@ -135,35 +146,35 @@ namespace FuzzyLib
             return this;
         }
 
-        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermWrapper<TAntecendent> antecedent, FuzzyTermWrapper<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
+        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
         {
             Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
             return this;
         }
 
-        public FuzzyTermWrapper<FuzzySetTerm> WrapSet(string name)
+        public FuzzyTermDecorator<FuzzySetTerm> WrapSet(string name)
         {
-            return FuzzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetTerm>(FuzzySets[name]) : null;
+            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTerm>(FuzzySets[name]) : null;
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
+        public FuzzyTermDecorator<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
+            return new FuzzyTermDecorator<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
         }
 
-        public FuzzyTermWrapper<FuzzyOperatorOr> Or(FuzzyTerm lhs, FuzzyTerm rhs)
+        public FuzzyTermDecorator<FuzzyOperatorOr> Or(FuzzyTerm lhs, FuzzyTerm rhs)
         {
-            return new FuzzyTermWrapper<FuzzyOperatorOr>(FuzzyOperator.Or(lhs, rhs));
+            return new FuzzyTermDecorator<FuzzyOperatorOr>(FuzzyOperator.Or(lhs, rhs));
         }
 
-        public FuzzyTermWrapper<FairlyFuzzyOperator> Fairly(FuzzyTerm term)
+        public FuzzyTermDecorator<FairlyFuzzyOperator> Fairly(FuzzyTerm term)
         {
-            return new FuzzyTermWrapper<FairlyFuzzyOperator>(FuzzyOperator.Fairly(term));
+            return new FuzzyTermDecorator<FairlyFuzzyOperator>(FuzzyOperator.Fairly(term));
         }
 
-        public FuzzyTermWrapper<VeryFuzzyOperator> Very(FuzzyTerm term)
+        public FuzzyTermDecorator<VeryFuzzyOperator> Very(FuzzyTerm term)
         {
-            return new FuzzyTermWrapper<VeryFuzzyOperator>(FuzzyOperator.Very(term));
+            return new FuzzyTermDecorator<VeryFuzzyOperator>(FuzzyOperator.Very(term));
         }
 
         public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet

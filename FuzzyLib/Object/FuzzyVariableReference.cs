@@ -1,6 +1,7 @@
 using System.Reflection;
+using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Object
 {
     public class FuzzyVariableReference
     {

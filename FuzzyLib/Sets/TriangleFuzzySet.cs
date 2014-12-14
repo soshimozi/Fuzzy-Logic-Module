@@ -1,6 +1,7 @@
 ﻿using System;
+using FuzzyLib.Variables;
 
-namespace FuzzyLib
+namespace FuzzyLib.Sets
 {
 
     public class TriangleFuzzySet : FuzzySet
@@ -9,12 +10,27 @@ namespace FuzzyLib
         private readonly double _peakPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
+        private readonly double _min;
+        private readonly double _max;
+
+        public override double GetMinBound()
+        {
+            return _min;
+        }
+
+        public override double GetMaxBound()
+        {
+            return _max;
+        }
 
         public TriangleFuzzySet(double min,
                             double peak,
                             double max)
-            : base(peak, min, max)
+            : base(peak)
         {
+            _min = min;
+            _max = max;
+
             _peakPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;

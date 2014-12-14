@@ -1,8 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Dynamic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Remoting.Proxies;
 using System.Text;
+using AspectOrientedProgramming;
 using FuzzyLib;
+using FuzzyLib.Object;
+using FuzzyLib.Variables;
 using Observables;
+using Observables.Annotations;
 
 namespace TestFuzzyLib
 {
@@ -62,14 +72,20 @@ namespace TestFuzzyLib
 
             //var dynamicProxy = new DynamicProxy<Enemy>(new Enemy());
             //var enemy = dynamicProxy.GetTransparentProxy() as Enemy;
-
             var enemy = ObservableDynamicProxy<Enemy>.Marshal(new Enemy(), false);
 
-            var mod = new ObservableFuzzyObject<Enemy>(enemy);
+            var mod = new ObservableFuzzyObject<Enemy>(enemy, new FuzzyModule());
 
             mod.DefineVariable(p => p.DistanceToTarget);
             mod.DefineVariable(p => p.AmmoStatus);
             mod.DefineVariable(p => p.Desireability);
+
+            //_min = min;
+            //_max = max;
+
+            //_peakPoint = peak;
+            //_leftOffset = (peak - min);
+            //_rightOffset = (max - peak);
 
             mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, FuzzySet.CreateRightShoulderSet, 10, 20, 100)
                 .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 10, 30)
@@ -93,17 +109,11 @@ namespace TestFuzzyLib
             dynamic modwrapper = mod.GetDynamic();
 
             mod.AddRule(
-                mod.Or(mod.WrapSet("Target_Close")
-                        .And(mod["Ammo_Low"]),
-                       mod.Or(mod.WrapSet("Target_Close")
-                            .And(mod["Ammo_Loads"]),
-                       mod.WrapSet("Target_Close")
-                            .And(mod["Ammo_Okay"]))
+                mod.Or(mod.And(modwrapper.Target_Close,modwrapper.Ammo_Low),
+                       mod.Or(mod.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
+                       mod.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
                 ),
-                mod["Undesirable"]);
-
-            mod.AddRule(mod.WrapSet("Target_Close").And(mod["Ammo_Okay"]), mod["Undesirable"]);
-            mod.AddRule(mod.WrapSet("Target_Close").And(mod["Ammo_Low"]), mod["Undesirable"]);
+                modwrapper.Undesirable);
 
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod["VeryDesirable"]);
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Okay"]), mod["VeryDesirable"]);
@@ -113,8 +123,10 @@ namespace TestFuzzyLib
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Okay"]), mod["Undesirable"]);
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Low"]), mod["Undesirable"]);
 
-            enemy.DistanceToTarget = 20;
-            enemy.AmmoStatus = 43;
+            mod.AddRule(mod.WrapSet("Target_Far").Very(), mod["VeryDesirable"]);
+
+            enemy.DistanceToTarget = 12;
+            enemy.AmmoStatus = 12;
 
             //mod.Compile(
             //    p => p.DistanceToTarget,

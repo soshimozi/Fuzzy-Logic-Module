@@ -1,10 +1,11 @@
 using System.ComponentModel;
+using FuzzyLib.Infrastructure;
 
-namespace FuzzyLib
+namespace FuzzyLib.Object
 {
     public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : INotifyPropertyChanged
     {
-        public ObservableFuzzyObject(T obj) : base(obj)
+        public ObservableFuzzyObject(T obj, FuzzyModule module) : base(obj, module)
         {
             (obj as INotifyPropertyChanged).PropertyChanged += (sender, args) =>
             {

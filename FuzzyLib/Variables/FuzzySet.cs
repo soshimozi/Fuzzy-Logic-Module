@@ -1,33 +1,39 @@
-﻿namespace FuzzyLib
+﻿using FuzzyLib.Sets;
+
+namespace FuzzyLib.Variables
 {
     public abstract class FuzzySet
     {
         private double _degreeOfMembership;
 
-        public double MinBound
-        {
-            get;
-            private set;
-        }
+        //public double MinBound
+        //{
+        //    get;
+        //    private set;
+        //}
 
-        public double MaxBound
-        {
-            get;
-            private set;
-        }
+        //public double MaxBound
+        //{
+        //    get;
+        //    private set;
+        //}
+
+        public abstract double GetMinBound();
+
+        public abstract double GetMaxBound();
 
         // this is the maximum of the set's membership membership function.  For instance,
         // if the set is triangular then this will be the peak point of the triangle.
         // It is calculated at the constructor to avoid run-time calculation of midpoint values.
         private readonly double _representativeValue;
 
-        protected FuzzySet(double representativeValue, double minBound, double maxBound)
+        protected FuzzySet(double representativeValue)
         {
             _degreeOfMembership = 0;
             _representativeValue = representativeValue;
 
-            MinBound = minBound;
-            MaxBound = maxBound;
+            //MinBound = minBound;
+            //MaxBound = maxBound;
         }
 
         abstract public double CalculateDegreeOfMembership(double value);

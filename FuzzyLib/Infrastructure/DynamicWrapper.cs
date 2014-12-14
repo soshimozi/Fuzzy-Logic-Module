@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 
-namespace FuzzyLib
+namespace FuzzyLib.Infrastructure
 {
     public class DynamicWrapper<TWrapped> : DynamicObject
     {

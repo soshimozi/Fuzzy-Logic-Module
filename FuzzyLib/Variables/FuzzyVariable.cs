@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FuzzyLib
+namespace FuzzyLib.Variables
 {
     public class FuzzyVariable
     {
@@ -23,15 +23,15 @@ namespace FuzzyLib
             FuzzySet set)
         {
             _memberSets.Add(name, set);
-            AdjustRangeToFit(set.MinBound, set.MaxBound);
+            AdjustRangeToFit(set.GetMinBound(), set.GetMaxBound());
             return FuzzySetTerm.CreateProxyForSet(set);
         }
 
         //fuzzify a value by calculating its DOM in each of this variable's subsets
         public void Fuzzify(double value)
         {
-            if (value < _minimumRange || value > _maximumRange)
-                throw new ArgumentOutOfRangeException("value");
+            //if (value < _minimumRange || value > _maximumRange)
+            //    throw new ArgumentOutOfRangeException("value");
 
 
             //for each set in the flv calculate the DOM for the given value

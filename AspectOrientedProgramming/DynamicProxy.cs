@@ -19,6 +19,12 @@ namespace AspectOrientedProgramming
             return (T)proxy.GetTransparentProxy();
         }
 
+        public static IDynamicProxy<T> MarshalProxy(T target, bool useLogging)
+        {
+            var proxy = new DynamicProxy<T>(target, useLogging);
+            return (IDynamicProxy<T>)proxy.GetTransparentProxy();
+        }
+
         // The basic constructor initializes the RealProxy with the 
         // IInterposed interface type and saves away the target instance. 
 

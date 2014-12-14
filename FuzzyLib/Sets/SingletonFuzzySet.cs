@@ -1,4 +1,6 @@
-﻿namespace FuzzyLib
+﻿using FuzzyLib.Variables;
+
+namespace FuzzyLib.Sets
 {
     public class SingletonFuzzySet : FuzzySet
     {
@@ -6,6 +8,18 @@
         private readonly double _midPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
+        private readonly double _min;
+        private readonly double _max;
+
+        public override double GetMinBound()
+        {
+            return _min;
+        }
+
+        public override double GetMaxBound()
+        {
+            return _max;
+        }
 
         public override double CalculateDegreeOfMembership(double value)
         {
@@ -23,8 +37,10 @@
         public SingletonFuzzySet(double min,
                              double peak,
                              double max)
-            : base(peak, min, max)
+            : base(peak)
         {
+            _min = min;
+            _max = max;
             _midPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;

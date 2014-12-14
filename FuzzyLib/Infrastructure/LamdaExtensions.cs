@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace FuzzyLib
+namespace FuzzyLib.Infrastructure
 {
     public static class LamdaExtensions
     {

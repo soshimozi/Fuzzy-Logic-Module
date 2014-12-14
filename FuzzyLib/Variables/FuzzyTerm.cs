@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FuzzyLib
+namespace FuzzyLib.Variables
 {
     public abstract class FuzzyTerm : ICloneable
     {

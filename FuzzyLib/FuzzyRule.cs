@@ -1,4 +1,6 @@
-﻿namespace FuzzyLib
+﻿using FuzzyLib.Variables;
+
+namespace FuzzyLib
 {
     public class FuzzyRule
     {
