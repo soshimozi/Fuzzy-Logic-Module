@@ -1,31 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace FuzzyLib
 {
-    public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : INotifyPropertyChanged
+    public class FuzzyObject<T>
     {
-        public ObservableFuzzyObject(T obj) : base(obj)
-        {
-        }
-    }
+        protected readonly FuzzyModule Module;
+        protected readonly T WrappedObject;
 
-    public class FuzzyObject<T> //: DynamicObject
-    {
-        private readonly FuzzyModule _module;
-        private readonly T _wrappedObject;
-
-        private readonly Dictionary<string, FuzzyVariableReference> _variableReferences = new Dictionary<string, FuzzyVariableReference>();
-        private readonly Dictionary<string, FuzzySetTerm> _fuzySets = new Dictionary<string, FuzzySetTerm>(); 
+        protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
+        protected readonly Dictionary<string, FuzzySetTerm> FuzzySets = new Dictionary<string, FuzzySetTerm>(); 
 
         public FuzzyObject(T obj)
         {
-            _wrappedObject = obj;
-            _module = new FuzzyModule();
+            WrappedObject = obj;
+            Module = new FuzzyModule();
         }
 
         public FuzzyObject<T> Compile<T1>(Expression<Func<T, T1>> func)
@@ -139,19 +131,19 @@ namespace FuzzyLib
 
         public FuzzyObject<T> AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
         {
-            _module.AddRule(antecedent, consequence);
+            Module.AddRule(antecedent, consequence);
             return this;
         }
 
         public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermWrapper<TAntecendent> antecedent, FuzzyTermWrapper<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
         {
-            _module.AddRule(antecedent.Wrapped, consequence.Wrapped);
+            Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
             return this;
         }
 
         public FuzzyTermWrapper<FuzzySetTerm> WrapSet(string name)
         {
-            return _fuzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetTerm>(_fuzySets[name]) : null;
+            return FuzzySets.ContainsKey(name) ? new FuzzyTermWrapper<FuzzySetTerm>(FuzzySets[name]) : null;
         }
 
         public FuzzyTermWrapper<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
@@ -177,9 +169,9 @@ namespace FuzzyLib
         public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
         {
             var pi = expr.GetPropertyInfo();
-            if (_variableReferences.ContainsKey(pi.Name) && !_fuzySets.ContainsKey(name))
+            if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
             {
-                _fuzySets.Add(name, _variableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
+                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
 
             }
                 
@@ -193,7 +185,7 @@ namespace FuzzyLib
 
         public FuzzySetTerm FuzzyTerm(string name)
         {
-            return _fuzySets.ContainsKey(name) ? _fuzySets[name] : null;
+            return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
         }
 
         /// <summary>
@@ -209,13 +201,13 @@ namespace FuzzyLib
             var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == name);
             if(prop == null) throw new ArgumentException("Property does not exist.", "name");
 
-            return _variableReferences.ContainsKey(name) ? _variableReferences[name].Variable : AddVariable(name, prop);
+            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, prop);
         }
 
         private FuzzyVariable AddVariable(string name, PropertyInfo prop)
         {
-            var variable = _module.CreateFLV(name);
-            _variableReferences.Add(name, new FuzzyVariableReference {PropertyInfo = prop, Variable = variable});
+            var variable = Module.CreateFLV(name);
+            VariableReferences.Add(name, new FuzzyVariableReference {PropertyInfo = prop, Variable = variable});
             return variable;
         }
 
@@ -223,12 +215,12 @@ namespace FuzzyLib
         {
             var pi = func.GetPropertyInfo();
 
-            if (_variableReferences.ContainsKey(pi.Name))
+            if (VariableReferences.ContainsKey(pi.Name))
             {
                 double value;
-                if (double.TryParse(pi.GetValue(_wrappedObject, null).ToString(), out value))
+                if (double.TryParse(pi.GetValue(WrappedObject, null).ToString(), out value))
                 {
-                    _module.Fuzzify(pi.Name, value);
+                    Module.Fuzzify(pi.Name, value);
                 }
                 
             }
@@ -238,17 +230,17 @@ namespace FuzzyLib
         {
             var pi = func.GetPropertyInfo();
 
-            var defuzzy = _module.DeFuzzify(pi.Name, method);
-            pi.SetValue(_wrappedObject, defuzzy, null);
+            var defuzzy = Module.DeFuzzify(pi.Name, method);
+            pi.SetValue(WrappedObject, defuzzy, null);
         }
 
         public void Fuzzify<TProp>(Expression<Func<T, TProp>> func, TProp value)
         {
             var pi = func.GetPropertyInfo();
 
-            if (_variableReferences.ContainsKey(pi.Name))
+            if (VariableReferences.ContainsKey(pi.Name))
             {
-                pi.SetValue(_wrappedObject, value, null);
+                pi.SetValue(WrappedObject, value, null);
             }
         }
 
@@ -257,12 +249,12 @@ namespace FuzzyLib
             var propertyInfo = func.GetPropertyInfo();
             var name = propertyInfo.Name;
 
-            return _variableReferences.ContainsKey(name) ? _variableReferences[name].Variable : AddVariable(name, propertyInfo);
+            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, propertyInfo);
         }
 
         public dynamic GetDynamic()
         {
-            return new DynamicWrapper<FuzzySetTerm>(_fuzySets);
+            return new DynamicWrapper<FuzzySetTerm>(FuzzySets);
         }
     }
 }

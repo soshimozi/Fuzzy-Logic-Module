@@ -1,3 +1,5 @@
+using Observables;
+
 namespace TestFuzzyLib
 {
     public class Enemy : ObservableObject<Enemy>

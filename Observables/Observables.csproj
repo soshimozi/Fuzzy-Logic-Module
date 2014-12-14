@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FBC799CC-0339-4B8E-AD7D-ACADBAC23E39}</ProjectGuid>
+    <ProjectGuid>{EC113031-67DF-4C1A-A462-AA682432C937}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FuzzyLib</RootNamespace>
-    <AssemblyName>FuzzyLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Observables</RootNamespace>
+    <AssemblyName>Observables</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,29 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoubleSafeCaster.cs" />
-    <Compile Include="DynamicWrapper.cs" />
-    <Compile Include="FairlyFuzzyOperator.cs" />
-    <Compile Include="FuzzyModule.cs" />
-    <Compile Include="FuzzyObject.cs" />
-    <Compile Include="FuzzyOperator.cs" />
-    <Compile Include="FuzzyOperatorAND.cs" />
-    <Compile Include="FuzzyOperatorOR.cs" />
-    <Compile Include="FuzzyRule.cs" />
-    <Compile Include="FuzzySet.cs" />
-    <Compile Include="FuzzySetTerm.cs" />
-    <Compile Include="FuzzyTermWrapper.cs" />
-    <Compile Include="FuzzyVariableReference.cs" />
-    <Compile Include="LamdaExtensions.cs" />
-    <Compile Include="ObservableFuzzyObject.cs" />
-    <Compile Include="SingletonFuzzySet.cs" />
-    <Compile Include="FuzzyTerm.cs" />
-    <Compile Include="FuzzyVariable.cs" />
-    <Compile Include="LeftShoulderFuzzySet.cs" />
+    <Compile Include="ObservableAttribute.cs" />
+    <Compile Include="ObservableDynamicProxy.cs" />
+    <Compile Include="ObservableObject.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RightShoulderFuzzySet.cs" />
-    <Compile Include="TriangleFuzzySet.cs" />
-    <Compile Include="VeryFuzzyOperator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AspectOrientedProgramming\AspectOrientedProgramming.csproj">
+      <Project>{18f32ceb-db41-49de-a0e5-b38293e9c25a}</Project>
+      <Name>AspectOrientedProgramming</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

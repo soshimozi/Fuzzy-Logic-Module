@@ -1,10 +1,10 @@
-using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using AspectOrientedProgramming;
 
-namespace TestFuzzyLib
+
+namespace Observables
 {
     public class ObservableDynamicProxy<T> : DynamicProxy<T> where T : ObservableObject<T>
     {

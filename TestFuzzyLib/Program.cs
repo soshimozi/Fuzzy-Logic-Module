@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Text;
 using FuzzyLib;
+using Observables;
 
 namespace TestFuzzyLib
 {
@@ -115,20 +116,20 @@ namespace TestFuzzyLib
             enemy.DistanceToTarget = 20;
             enemy.AmmoStatus = 43;
 
-            mod.Compile(
-                p => p.DistanceToTarget,
-                p => p.AmmoStatus);
+            //mod.Compile(
+            //    p => p.DistanceToTarget,
+            //    p => p.AmmoStatus);
 
             // get result
             mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("First result: {0}", enemy.Desireability);
 
             enemy.DistanceToTarget = 175;
-            enemy.AmmoStatus = 43;
+            //enemy.AmmoStatus = 43;
 
-            mod.Compile(
-                p => p.DistanceToTarget,
-                p => p.AmmoStatus);
+            //mod.Compile(
+            //    p => p.DistanceToTarget,
+            //    p => p.AmmoStatus);
 
             mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("Second result: {0}", enemy.Desireability);

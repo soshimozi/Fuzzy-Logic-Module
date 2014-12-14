@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TestFuzzyLib</RootNamespace>
     <AssemblyName>TestFuzzyLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -32,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,21 +46,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDynamicProxy.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="IEnemy.cs" />
-    <Compile Include="ObservableAttribute.cs" />
-    <Compile Include="ObservableDynamicProxy.cs" />
-    <Compile Include="ObservableObject.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AspectOrientedProgramming\AspectOrientedProgramming.csproj">
+      <Project>{18f32ceb-db41-49de-a0e5-b38293e9c25a}</Project>
+      <Name>AspectOrientedProgramming</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FuzzyLib\FuzzyLib.csproj">
       <Project>{FBC799CC-0339-4B8E-AD7D-ACADBAC23E39}</Project>
       <Name>FuzzyLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Observables\Observables.csproj">
+      <Project>{ec113031-67df-4c1a-a462-aa682432c937}</Project>
+      <Name>Observables</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
