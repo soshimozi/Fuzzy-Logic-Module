@@ -46,9 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharCodeMap.cs" />
+    <Compile Include="EndToken.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="ErrorToken.cs" />
+    <Compile Include="FuzzyManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialToken.cs" />
+    <Compile Include="TextBuffer.cs" />
+    <Compile Include="TextScanner.cs" />
+    <Compile Include="TokenCode.cs" />
+    <Compile Include="TokenType.cs" />
+    <Compile Include="WordToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AspectOrientedProgramming\AspectOrientedProgramming.csproj">
@@ -66,6 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CharacterMap.xml" />
+    <Content Include="foo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

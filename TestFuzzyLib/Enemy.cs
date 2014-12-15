@@ -16,6 +16,9 @@ namespace TestFuzzyLib
         [Observable]
         public int AmmoStatus { get; set; }
 
+        [Observable]
+        public double Skill { get; set; }
+
         public double Desireability { get; set; }
 
     }

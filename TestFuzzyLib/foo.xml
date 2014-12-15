@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
+  <FuzzyVariable name="Foo">
+    <Terms>
+      <Term name="Bar">
+        <Shape type="TestFuzzyLib.Shapes.LeftShoulder, TestFuzzyLib">
+          <parameters>
+            <add name="min" value="0" />
+            <add name="max" value="50" />
+          </parameters>
+        </Shape>
+      </Term>
+    </Terms>
+  </FuzzyVariable>
+</FuzzyModule>

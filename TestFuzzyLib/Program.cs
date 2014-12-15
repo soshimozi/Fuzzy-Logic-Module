@@ -1,12 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Dynamic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
 using System.Text;
+using System.Xml;
 using AspectOrientedProgramming;
 using FuzzyLib;
 using FuzzyLib.Object;
@@ -19,8 +22,69 @@ namespace TestFuzzyLib
     class Program
     {
         static FuzzyModule m_FuzzyModule = new FuzzyModule();
+
+        private static TokenCode token;
+
+        private static TokenType _tokenType;
+
+        private static TextScanner scanner;
+
+        private static readonly TokenCode[] tcUnaryOps
+            = {
+                TokenCode.Fairly,
+                TokenCode.Very
+            };
+
+        private static readonly TokenCode[] tcAddOps
+            = {
+                TokenCode.Or,
+            TokenCode.Very,
+            TokenCode.Fairly
+            };
+
+        private static readonly TokenCode[] tcMulOps
+            =
+        {
+            TokenCode.And
+        };
+
+        private static readonly TokenCode[] tcExpressionStart
+            =
+        {
+            TokenCode.LParen,
+            TokenCode.Identifier
+        };
+
+        private static void GetToken()
+        {
+            _tokenType = scanner.Get();
+            token = _tokenType.Code;
+        }
         static void Main(string[] args)
         {
+
+            CharCodeMap map = new CharCodeMap();
+
+            var doc = new XmlDocument();
+
+
+            map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
+
+            //do
+            //{
+            //    currentToken = scanner.Get();
+
+            //} while (currentToken.Code != TokenCode.End);
+
+            //scanner.MoveFirst();
+
+            //Console.Write(scanner.CurrentChar());
+
+            //while (scanner.MoveNext() != 0)
+            //{
+            //    Console.Write(scanner.CurrentChar());
+            //}
+
             //FuzzyModule fm = new FuzzyModule();
 
             //FuzzyVariable DistToTarget = m_FuzzyModule.CreateFLV("DistToTarget");
@@ -74,11 +138,14 @@ namespace TestFuzzyLib
             //var enemy = dynamicProxy.GetTransparentProxy() as Enemy;
             var enemy = ObservableDynamicProxy<Enemy>.Marshal(new Enemy(), false);
 
-            var mod = new ObservableFuzzyObject<Enemy>(enemy, new FuzzyModule());
+
+            var fuzzyModule = new FuzzyModule();
+            var mod = new ObservableFuzzyObject<Enemy>(enemy, fuzzyModule);
 
             mod.DefineVariable(p => p.DistanceToTarget);
             mod.DefineVariable(p => p.AmmoStatus);
             mod.DefineVariable(p => p.Desireability);
+            mod.DefineVariable(p => p.Skill);
 
             //_min = min;
             //_max = max;
@@ -86,6 +153,10 @@ namespace TestFuzzyLib
             //_peakPoint = peak;
             //_leftOffset = (peak - min);
             //_rightOffset = (max - peak);
+
+            mod.AddFuzzySet("Very_Skilled", p => p.Skill, FuzzySet.CreateRightShoulderSet, 20, 80, 100)
+                .AddFuzzySet("Skilled", p => p.Skill, FuzzySet.CreateTriangularSet, 10, 20, 30)
+                .AddFuzzySet("Low_Skilled", p => p.Skill, FuzzySet.CreateLeftShoulderSet, 0, 5, 20);
 
             mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, FuzzySet.CreateRightShoulderSet, 10, 20, 100)
                 .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 10, 30)
@@ -115,7 +186,7 @@ namespace TestFuzzyLib
                 ),
                 modwrapper.Undesirable);
 
-            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod["VeryDesirable"]);
+            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod.WrapSet("Desirable"));
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Okay"]), mod["VeryDesirable"]);
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Low"]), mod["Desirable"]);
 
@@ -137,7 +208,7 @@ namespace TestFuzzyLib
             Console.WriteLine("First result: {0}", enemy.Desireability);
 
             enemy.DistanceToTarget = 175;
-            //enemy.AmmoStatus = 43;
+            enemy.AmmoStatus = 43;
 
             //mod.Compile(
             //    p => p.DistanceToTarget,
@@ -149,6 +220,173 @@ namespace TestFuzzyLib
 
             Console.ReadKey(true);
 
+            TextBuffer buffer = new TextBuffer("IF (Target_Distance:Target_Close AND Ammo:Low_Ammo) OR VERY(Target_Distance:Target_Close AND FAIRLY Ammo:Low_Ammo) OR Ammo:Ammo_Loads THEN Desirability:Desirable");
+
+            scanner = new TextScanner(buffer, map);
+
+            TokenType currentToken = scanner.Get();
+
+            FuzzyManager manager = new FuzzyManager(fuzzyModule);
+            manager.DefineVariable("Target_Distance");
+            manager.DefineVariable("Ammo");
+            manager.DefineVariable("Desirability");
+
+            manager.AddFuzzySet("Low_Ammo", "Ammo", FuzzySet.CreateTriangularSet, 0, 0, 10);
+            manager.AddFuzzySet("Target_Close", "Target_Distance", FuzzySet.CreateLeftShoulderSet, 0, 25, 150);
+            manager.AddFuzzySet("Desirable", "Desirability", FuzzySet.CreateTriangularSet, 25, 50, 75);
+            manager.AddFuzzySet("Ammo_Loads", "Ammo", FuzzySet.CreateRightShoulderSet, 10, 20, 100);
+
+            FuzzyRule rule = Parse(manager);
+        }
+
+        private static FuzzyRule Parse(FuzzyManager manager)
+        {
+            FuzzyTerm antecedent;
+            FuzzyTerm consequence;
+
+            if (token == TokenCode.If)
+            {
+                GetToken();
+                antecedent = ParseExpression(manager);
+
+                if (token == TokenCode.Then)
+                {
+                    GetToken();
+                    consequence = ParseExpression(manager);
+
+                    return manager.AddRule(antecedent, consequence);
+                }
+                else
+                    throw new Exception("Missing Then");
+            }
+
+            throw new Exception("Missing If");
+        }
+
+        private static FuzzyTerm ParseExpression(FuzzyManager manager)
+        {
+            var resultTerm = ParseSimpleExpression(manager);
+            return resultTerm;
+        }
+
+        private static FuzzyTerm ParseSimpleExpression(FuzzyManager manager)
+        {
+            FuzzyTerm resultTerm;
+            TokenCode op;
+
+            resultTerm = ParseTerm(manager);
+
+            while (tcAddOps.Any(tc => tc == token))
+            {
+                op = token;
+                GetToken();
+
+                var operandTerm = ParseTerm(manager);
+                if (op == TokenCode.Or)
+                {
+                    resultTerm = manager.Or(resultTerm, operandTerm);
+                }
+            }
+
+            return resultTerm;
+        }
+
+        private static FuzzyTerm ParseTerm(FuzzyManager manager)
+        {
+            var resultTerm = ParseFactor(manager);
+
+            while (tcMulOps.Any(tc => tc == token))
+            {
+                var op = token;
+                GetToken();
+                var operandTerm = ParseFactor(manager);
+
+                if (op == TokenCode.And)
+                {
+                    resultTerm = manager.And(resultTerm, operandTerm);
+                }
+            }
+
+            return resultTerm;
+        }
+
+        private static FuzzyTerm ParseFactor(FuzzyManager manager)
+        {
+            FuzzyTerm resultTerm = null;
+
+            switch (token)
+            {
+                case TokenCode.Identifier:
+                    resultTerm = ParseVariable(manager);
+                    break;
+
+                case TokenCode.Fairly:
+                    GetToken();
+                    resultTerm = manager.Fairly(ParseFactor(manager));
+                    break;
+
+                case TokenCode.Very:
+                    GetToken();
+                    resultTerm = manager.Very(ParseFactor(manager));
+                    break;
+
+                case TokenCode.LParen:
+                    GetToken();
+                    resultTerm = ParseExpression(manager);
+
+                    if (token == TokenCode.RParen)
+                        GetToken();
+                    else
+                        throw new Exception("Missing Right Parenthesis");
+                    break;
+
+                default:
+                    throw new Exception("Invalid Expression");
+            }
+
+            return resultTerm;
+        }
+
+        private static FuzzyTerm ParseVariable(FuzzyManager manager)
+        {
+            var variableScope = _tokenType.TokenString;
+            
+            GetToken();
+
+            if (token != TokenCode.Scope)
+            {
+                throw new Exception("Invalid Identifer - missing scope operator.");
+            }
+
+            GetToken();
+            if (token != TokenCode.Identifier)
+            {
+                throw new Exception("Invalid Identifier - missing set name.");
+            }
+
+            var setName = _tokenType.TokenString;
+
+            GetToken();
+
+            var returnTerm = manager.GetFuzzySet(setName, variableScope);
+            if (returnTerm == null) throw new Exception("Invalid variable scope or name.");
+
+            return returnTerm;
+        }
+
+        public static string GetResourceTextFile(string filename)
+        {
+            string result = string.Empty;
+
+            using (Stream stream = typeof(Program).Assembly.
+                       GetManifestResourceStream("TestFuzzyLib." + filename))
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    result = sr.ReadToEnd();
+                }
+            }
+            return result;
         }
     }
 }
