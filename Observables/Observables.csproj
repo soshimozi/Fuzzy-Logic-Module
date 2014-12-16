@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="ObservableAttribute.cs" />
     <Compile Include="ObservableDynamicProxy.cs" />
-    <Compile Include="ObservableObject.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

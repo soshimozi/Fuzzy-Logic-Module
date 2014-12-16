@@ -267,5 +267,11 @@ namespace FuzzyLib.Object
         {
             return new DynamicWrapper<FuzzySetTerm>(FuzzySets);
         }
+
+        public class FuzzyVariableReference
+        {
+            public FuzzyVariable Variable { get; set; }
+            public PropertyInfo PropertyInfo { get; set; }
+        }    
     }
 }

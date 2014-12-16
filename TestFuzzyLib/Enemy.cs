@@ -1,8 +1,10 @@
+using System;
+using System.ComponentModel;
 using Observables;
 
 namespace TestFuzzyLib
 {
-    public class Enemy : ObservableObject<Enemy>
+    public class Enemy : MarshalByRefObject, INotifyPropertyChanged
     {
         public double Health { get; set; }
 
@@ -21,5 +23,14 @@ namespace TestFuzzyLib
 
         public double Desireability { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }

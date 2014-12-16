@@ -50,6 +50,7 @@
     <Compile Include="Operators\FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
     <Compile Include="Operators\ImpliesOperator.cs" />
+    <Compile Include="Sets\GradientSet.cs" />
     <Compile Include="Statement\CharacterType.cs" />
     <Compile Include="Statement\CharacterTypeExpression.cs" />
     <Compile Include="Statement\CharCodeMap.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Statement\TokenCode.cs" />
     <Compile Include="Statement\TokenType.cs" />
     <Compile Include="Statement\WordToken.cs" />
-    <Compile Include="Variables\FuzzySet.cs" />
+    <Compile Include="Sets\FuzzySet.cs" />
     <Compile Include="Variables\FuzzySetTerm.cs" />
     <Compile Include="Decorator\FuzzyTermDecorator.cs" />
     <Compile Include="Object\FuzzyVariableReference.cs" />

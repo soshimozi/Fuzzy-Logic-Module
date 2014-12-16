@@ -1,6 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
   <FuzzyVariables>
+<!--
+
+            //FuzzyVariable Desirability = m_FuzzyModule.CreateFLV("Desirability");
+            //FuzzySetTerm Undesirable = Desirability.AddFuzzySet("Undesirable", FuzzySet.CreateLeftShoulderSet(0, 25, 50));
+            //FuzzySetTerm Desirable = Desirability.AddFuzzySet("Desirable", FuzzySet.CreateTriangularSet(25, 50, 75));
+            //FuzzySetTerm VeryDesirable = Desirability.AddFuzzySet("VeryDesirable", FuzzySet.CreateRightShoulderSet(50, 75, 100));
+
+            //FuzzyVariable AmmoStatus = m_FuzzyModule.CreateFLV("AmmoStatus");
+            //FuzzySetTerm Ammo_Loads = AmmoStatus.AddFuzzySet("Ammo_Loads", FuzzySet.CreateRightShoulderSet(10, 30, 100));
+            //FuzzySetTerm Ammo_Okay = AmmoStatus.AddFuzzySet("Ammo_Okay", FuzzySet.CreateTriangularSet(0, 10, 30));
+            //FuzzySetTerm Ammo_Low = AmmoStatus.AddFuzzySet("Ammo_Low", FuzzySet.CreateTriangularSet(0, 0, 10));
+
+
+
+-->
+    <FuzzyVariable name="DistToTarget">
+      <Terms>
+        <Term name="Target_Close">
+          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="25" />
+              <add name="max" value="150" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Target_Medium">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="15" />
+              <add name="peak" value="150" />
+              <add name="max" value="300" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Target_Far">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="150" />
+              <add name="peak" value="300" />
+              <add name="max" value="1000" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+    <FuzzyVariable name="Desirability">
+      <Terms>
+        <Term name="Undesirable">
+          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="25" />
+              <add name="max" value="50" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Desirable">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet">
+            <parameters>
+              <add name="min" value="25" />
+              <add name="peak" value="50" />
+              <add name="max" value="75" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="VeryDesirable">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet">
+            <parameters>
+              <add name="min" value="50" />
+              <add name="peak" value="75" />
+              <add name="max" value="100" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+    <FuzzyVariable name="AmmoStatus">
+      <Terms>
+        <Term name="Ammo_Low">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="0" />
+              <add name="max" value="10" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Ammo_Okay">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="10" />
+              <add name="max" value="30" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Ammo_Loads">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="10" />
+              <add name="peak" value="30" />
+              <add name="max" value="100" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
     <FuzzyVariable name="Foo">
       <Terms>
         <Term name="Bar">

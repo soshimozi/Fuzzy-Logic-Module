@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using AspectOrientedProgramming;
 
 namespace Observables
 {
-    public class ObservableDynamicProxy<T> : DynamicProxy<T> where T : ObservableObject<T>
+    public class ObservableDynamicProxy<T> : DynamicProxy<T> where T : MarshalByRefObject
     {
         protected ObservableDynamicProxy(T decorated, bool useLogging) : base(decorated, useLogging)
         {
