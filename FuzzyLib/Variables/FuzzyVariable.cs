@@ -18,6 +18,11 @@ namespace FuzzyLib.Variables
             _maximumRange = Math.Max(max, _maximumRange);
         }
 
+        public FuzzySetTerm GetFuzzySet(string name)
+        {
+            return FuzzySetTerm.CreateProxyForSet(_memberSets[name]);
+        }
+
         public FuzzySetTerm AddFuzzySet(
             string name, 
             FuzzySet set)

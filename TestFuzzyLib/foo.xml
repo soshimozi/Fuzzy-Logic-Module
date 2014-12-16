@@ -1,15 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
-  <FuzzyVariable name="Foo">
-    <Terms>
-      <Term name="Bar">
-        <Shape type="TestFuzzyLib.Shapes.LeftShoulder, TestFuzzyLib">
-          <parameters>
-            <add name="min" value="0" />
-            <add name="max" value="50" />
-          </parameters>
-        </Shape>
-      </Term>
-    </Terms>
-  </FuzzyVariable>
+  <FuzzyVariables>
+    <FuzzyVariable name="Foo">
+      <Terms>
+        <Term name="Bar">
+          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="max" value="50" />
+              <add name="peak" value="10" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+  </FuzzyVariables>
+  <FuzzyRules>
+    <Rule>
+      <![CDATA[
+        IF (Target_Distance:Target_Close AND Ammo:Low_Ammo) 
+            OR VERY(Target_Distance:Target_Close AND FAIRLY Ammo:Low_Ammo) 
+            OR Ammo:Ammo_Loads 
+        THEN Desirability:Desirable
+      ]]>
+    </Rule>
+  </FuzzyRules>
 </FuzzyModule>
