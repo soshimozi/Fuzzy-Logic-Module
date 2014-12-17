@@ -1,17 +1,16 @@
 ﻿using System;
-using FuzzyLib.Variables;
 
 namespace FuzzyLib.Sets
 {
     public class LeftShoulderFuzzySet : FuzzySet
     {
         //the values that define the shape of this FLV
-        readonly double _peakPoint;
-        readonly double _rightOffset;
-        readonly double _leftOffset;
+        private readonly double _peakPoint;
+        private readonly double _rightOffset;
+        private readonly double _leftOffset;
 
-        public readonly double _min;
-        public readonly double _max;
+        private readonly double _min;
+        private readonly double _max;
 
         public LeftShoulderFuzzySet(double min,
                               double peak,

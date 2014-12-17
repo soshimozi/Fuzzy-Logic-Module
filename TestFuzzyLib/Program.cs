@@ -13,8 +13,8 @@ using System.Xml;
 using AspectOrientedProgramming;
 using FuzzyLib;
 using FuzzyLib.Object;
+using FuzzyLib.Sets;
 using FuzzyLib.Statement;
-using FuzzyLib.Variables;
 using Observables;
 using Observables.Annotations;
 
@@ -31,12 +31,18 @@ namespace TestFuzzyLib
             var module = new FuzzyModule();
             var parser = new StatementParser(module, map);
 
-            var xmlLoader = new FuzzyXmlLoader(parser, module);
+            var enemy2 = ObservableDynamicProxy<Enemy>.Marshal(new Enemy(), false);
+            var fo = new ObservableFuzzyObject<Enemy>(enemy2, module);
+            var xmlLoader = new FuzzyXmlLoader<Enemy>(parser, fo);
             
             xmlLoader.LoadXml(GetResourceTextFile("foo.xml"));
 
+            enemy2.DistanceToTarget = 10;
+            enemy2.AmmoStatus = 20;
 
+            fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv() );
 
+            var desirablity = enemy2.Desirability;
             //do
             //{
             //    currentToken = scanner.Get();
@@ -111,7 +117,7 @@ namespace TestFuzzyLib
 
             mod.DefineVariable(p => p.DistanceToTarget);
             mod.DefineVariable(p => p.AmmoStatus);
-            mod.DefineVariable(p => p.Desireability);
+            mod.DefineVariable(p => p.Desirability);
             mod.DefineVariable(p => p.Skill);
 
             //_min = min;
@@ -129,18 +135,18 @@ namespace TestFuzzyLib
                 .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 10, 30)
                 .AddFuzzySet("Ammo_Low", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 0, 10);
 
-            mod.AddFuzzySet("Undesirable", p => p.Desireability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50)
-                .AddFuzzySet("Desirable", p => p.Desireability, FuzzySet.CreateTriangularSet, 25, 50, 75)
-                .AddFuzzySet("VeryDesirable", p => p.Desireability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
+            mod.AddFuzzySet("Undesirable", p => p.Desirability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50)
+                .AddFuzzySet("Desirable", p => p.Desirability, FuzzySet.CreateTriangularSet, 25, 50, 75)
+                .AddFuzzySet("VeryDesirable", p => p.Desirability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
 
             mod.AddFuzzySet("Target_Close", p => p.DistanceToTarget, FuzzySet.CreateLeftShoulderSet, 0, 25, 150)
                 .AddFuzzySet("Target_Medium", p => p.DistanceToTarget, FuzzySet.CreateTriangularSet, 25, 150, 300)
                 .AddFuzzySet("Target_Far", p => p.DistanceToTarget, FuzzySet.CreateRightShoulderSet, 150, 300, 1000);
 
             //FuzzyVariable Desirability = m_FuzzyModule.CreateFLV("Desirability");
-            mod.AddFuzzySet("Undesirable", p => p.Desireability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50);
-            mod.AddFuzzySet("Desirable", p => p.Desireability, FuzzySet.CreateTriangularSet, 25, 50, 75);
-            mod.AddFuzzySet("VeryDesirable", p => p.Desireability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
+            mod.AddFuzzySet("Undesirable", p => p.Desirability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50);
+            mod.AddFuzzySet("Desirable", p => p.Desirability, FuzzySet.CreateTriangularSet, 25, 50, 75);
+            mod.AddFuzzySet("VeryDesirable", p => p.Desirability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
 
             //dynamic modwrapper = mod;
 
@@ -171,8 +177,8 @@ namespace TestFuzzyLib
             //    p => p.AmmoStatus);
 
             // get result
-            mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyMaxAv());
-            Console.WriteLine("First result: {0}", enemy.Desireability);
+            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("First result: {0}", enemy.Desirability);
 
             enemy.DistanceToTarget = 175;
             enemy.AmmoStatus = 43;
@@ -181,8 +187,8 @@ namespace TestFuzzyLib
             //    p => p.DistanceToTarget,
             //    p => p.AmmoStatus);
 
-            mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyMaxAv());
-            Console.WriteLine("Second result: {0}", enemy.Desireability);
+            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("Second result: {0}", enemy.Desirability);
 
 
             Console.ReadKey(true);

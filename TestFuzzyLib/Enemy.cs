@@ -21,7 +21,7 @@ namespace TestFuzzyLib
         [Observable]
         public double Skill { get; set; }
 
-        public double Desireability { get; set; }
+        public double Desirability { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

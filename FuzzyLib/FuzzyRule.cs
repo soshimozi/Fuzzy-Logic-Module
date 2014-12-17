@@ -1,6 +1,4 @@
-﻿using FuzzyLib.Variables;
-
-namespace FuzzyLib
+﻿namespace FuzzyLib
 {
     public class FuzzyRule
     {

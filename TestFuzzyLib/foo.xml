@@ -1,22 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
   <FuzzyVariables>
-<!--
-
-            //FuzzyVariable Desirability = m_FuzzyModule.CreateFLV("Desirability");
-            //FuzzySetTerm Undesirable = Desirability.AddFuzzySet("Undesirable", FuzzySet.CreateLeftShoulderSet(0, 25, 50));
-            //FuzzySetTerm Desirable = Desirability.AddFuzzySet("Desirable", FuzzySet.CreateTriangularSet(25, 50, 75));
-            //FuzzySetTerm VeryDesirable = Desirability.AddFuzzySet("VeryDesirable", FuzzySet.CreateRightShoulderSet(50, 75, 100));
-
-            //FuzzyVariable AmmoStatus = m_FuzzyModule.CreateFLV("AmmoStatus");
-            //FuzzySetTerm Ammo_Loads = AmmoStatus.AddFuzzySet("Ammo_Loads", FuzzySet.CreateRightShoulderSet(10, 30, 100));
-            //FuzzySetTerm Ammo_Okay = AmmoStatus.AddFuzzySet("Ammo_Okay", FuzzySet.CreateTriangularSet(0, 10, 30));
-            //FuzzySetTerm Ammo_Low = AmmoStatus.AddFuzzySet("Ammo_Low", FuzzySet.CreateTriangularSet(0, 0, 10));
-
-
-
--->
-    <FuzzyVariable name="DistToTarget">
+    <FuzzyVariable name="DistanceToTarget">
       <Terms>
         <Term name="Target_Close">
           <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
@@ -109,27 +94,14 @@
         </Term>
       </Terms>
     </FuzzyVariable>
-    <FuzzyVariable name="Foo">
-      <Terms>
-        <Term name="Bar">
-          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
-            <parameters>
-              <add name="min" value="0" />
-              <add name="max" value="50" />
-              <add name="peak" value="10" />
-            </parameters>
-          </Shape>
-        </Term>
-      </Terms>
-    </FuzzyVariable>
   </FuzzyVariables>
   <FuzzyRules>
     <Rule>
       <![CDATA[
-        IF (Target_Distance:Target_Close AND Ammo:Low_Ammo) 
-            OR VERY(Target_Distance:Target_Close AND FAIRLY Ammo:Low_Ammo) 
-            OR Ammo:Ammo_Loads 
-        THEN Desirability:Desirable
+      IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) 
+            OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) 
+            OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Okay) 
+      THEN Desirability:Undesirable
       ]]>
     </Rule>
   </FuzzyRules>

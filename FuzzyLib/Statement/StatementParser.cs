@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FuzzyLib.Decorator;
-using FuzzyLib.Variables;
 
 namespace FuzzyLib.Statement
 {
@@ -28,12 +26,9 @@ namespace FuzzyLib.Statement
             TokenCode.Fairly
         };
 
-        //public FuzzySetStatementManager FuzzyManager { get { return _manager; } }
-
         public StatementParser(FuzzyModule fuzzyModule, CharCodeMap map)
         {
             _characterMap = map;
-            //_manager = new FuzzySetStatementManager(fuzzyModule);
             _module = fuzzyModule;
         }
 
@@ -63,8 +58,6 @@ namespace FuzzyLib.Statement
 
             GetToken();
             var consequence = ParseExpression();
-
-            //return  _manager.AddRule(antecedent, consequence);
 
             return new Tuple<FuzzyTerm, FuzzyTerm>(antecedent, consequence);
         }

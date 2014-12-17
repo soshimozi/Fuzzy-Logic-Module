@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FuzzyLib.Decorator;
-using FuzzyLib.Operators;
-using FuzzyLib.Variables;
+using FuzzyLib.Sets;
 
 namespace FuzzyLib.Statement
 {
@@ -12,7 +10,7 @@ namespace FuzzyLib.Statement
 
         protected readonly Dictionary<string, FuzzyVariable> VariableReferences = new Dictionary<string, FuzzyVariable>();
 
-        protected readonly Dictionary<string, FuzzySetTerm> FuzzySets = new Dictionary<string, FuzzySetTerm>();
+        protected readonly Dictionary<string, FuzzySetTermProxy> FuzzySets = new Dictionary<string, FuzzySetTermProxy>();
 
         public FuzzySetStatementManager(FuzzyModule module)
         {

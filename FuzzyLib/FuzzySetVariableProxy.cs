@@ -1,17 +1,18 @@
 ﻿using FuzzyLib.Sets;
-namespace FuzzyLib.Variables
+
+namespace FuzzyLib
 {
-    public class FuzzySetTerm : FuzzyTerm
+    public class FuzzySetTermProxy : FuzzyTerm
     {
         private readonly FuzzySet _set;
-        private FuzzySetTerm(FuzzySet set)
+        private FuzzySetTermProxy(FuzzySet set)
         {
             _set = set;
         }
 
-        public static FuzzySetTerm CreateProxyForSet(FuzzySet set)
+        public static FuzzySetTermProxy CreateProxyForSet(FuzzySet set)
         {
-            return new FuzzySetTerm(set);
+            return new FuzzySetTermProxy(set);
         }
 
         public FuzzySet Set { get { return _set; } }
@@ -33,7 +34,7 @@ namespace FuzzyLib.Variables
 
         public override object Clone()
         {
-            return new FuzzySetTerm(_set);
+            return new FuzzySetTermProxy(_set);
         }
     }
 }

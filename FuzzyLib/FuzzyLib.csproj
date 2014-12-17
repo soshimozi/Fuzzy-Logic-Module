@@ -50,7 +50,6 @@
     <Compile Include="Operators\FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
     <Compile Include="Operators\ImpliesOperator.cs" />
-    <Compile Include="Sets\GradientSet.cs" />
     <Compile Include="Statement\CharacterType.cs" />
     <Compile Include="Statement\CharacterTypeExpression.cs" />
     <Compile Include="Statement\CharCodeMap.cs" />
@@ -66,15 +65,15 @@
     <Compile Include="Statement\TokenCode.cs" />
     <Compile Include="Statement\TokenType.cs" />
     <Compile Include="Statement\WordToken.cs" />
-    <Compile Include="Sets\FuzzySet.cs" />
-    <Compile Include="Variables\FuzzySetTerm.cs" />
+    <Compile Include="FuzzySet.cs" />
+    <Compile Include="FuzzySetVariableProxy.cs" />
     <Compile Include="Decorator\FuzzyTermDecorator.cs" />
     <Compile Include="Object\FuzzyVariableReference.cs" />
     <Compile Include="Infrastructure\LamdaExtensions.cs" />
     <Compile Include="Object\ObservableFuzzyObject.cs" />
     <Compile Include="Sets\SingletonFuzzySet.cs" />
-    <Compile Include="Variables\FuzzyTerm.cs" />
-    <Compile Include="Variables\FuzzyVariable.cs" />
+    <Compile Include="FuzzyTerm.cs" />
+    <Compile Include="FuzzyVariable.cs" />
     <Compile Include="Sets\LeftShoulderFuzzySet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sets\RightShoulderFuzzySet.cs" />
@@ -82,7 +81,7 @@
     <Compile Include="Operators\VeryFuzzyOperator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Statement\CharacterMap.xml" />
+    <Folder Include="Variables\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

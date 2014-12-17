@@ -1,6 +1,4 @@
-﻿using FuzzyLib.Variables;
-
-namespace FuzzyLib.Operators
+﻿namespace FuzzyLib.Operators
 {
     public static class FuzzyOperator
     {

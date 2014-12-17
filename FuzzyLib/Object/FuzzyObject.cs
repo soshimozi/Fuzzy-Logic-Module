@@ -6,7 +6,7 @@ using System.Reflection;
 using FuzzyLib.Decorator;
 using FuzzyLib.Infrastructure;
 using FuzzyLib.Operators;
-using FuzzyLib.Variables;
+using FuzzyLib.Sets;
 
 namespace FuzzyLib.Object
 {
@@ -17,7 +17,7 @@ namespace FuzzyLib.Object
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
 
-        protected readonly Dictionary<string, FuzzySetTerm> FuzzySets = new Dictionary<string, FuzzySetTerm>();
+        protected readonly Dictionary<string, FuzzySetTermProxy> FuzzySets = new Dictionary<string, FuzzySetTermProxy>();
 
         public FuzzyObject(T obj, FuzzyModule module)
         {
@@ -152,9 +152,9 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyTermDecorator<FuzzySetTerm> WrapSet(string name)
+        public FuzzyTermDecorator<FuzzySetTermProxy> WrapSet(string name)
         {
-            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTerm>(FuzzySets[name]) : null;
+            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTermProxy>(FuzzySets[name]) : null;
         }
 
         public FuzzyTermDecorator<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
@@ -189,12 +189,21 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzySetTerm this[string name]
+        public void AddFuzzySet(string setName, string variableName, FuzzySet set)
+        {
+            if (VariableReferences.ContainsKey(variableName))
+            {
+                VariableReferences[variableName].Variable.AddFuzzySet(setName, set);
+            }
+            
+        }
+
+        public FuzzySetTermProxy this[string name]
         {
             get { return FuzzyTerm(name); }
         }
 
-        public FuzzySetTerm FuzzyTerm(string name)
+        public FuzzySetTermProxy FuzzyTerm(string name)
         {
             return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
         }
@@ -265,7 +274,7 @@ namespace FuzzyLib.Object
 
         public dynamic GetDynamic()
         {
-            return new DynamicWrapper<FuzzySetTerm>(FuzzySets);
+            return new DynamicWrapper<FuzzySetTermProxy>(FuzzySets);
         }
 
         public class FuzzyVariableReference

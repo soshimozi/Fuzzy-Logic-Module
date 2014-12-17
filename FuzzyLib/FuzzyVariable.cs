@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FuzzyLib.Sets;
 
-namespace FuzzyLib.Variables
+namespace FuzzyLib
 {
     public class FuzzyVariable
     {
@@ -19,18 +19,18 @@ namespace FuzzyLib.Variables
             _maximumRange = Math.Max(max, _maximumRange);
         }
 
-        public FuzzySetTerm GetFuzzySet(string name)
+        public FuzzySetTermProxy GetFuzzySet(string name)
         {
-            return FuzzySetTerm.CreateProxyForSet(_memberSets[name]);
+            return FuzzySetTermProxy.CreateProxyForSet(_memberSets[name]);
         }
 
-        public FuzzySetTerm AddFuzzySet(
+        public FuzzySetTermProxy AddFuzzySet(
             string name, 
             FuzzySet set)
         {
             _memberSets.Add(name, set);
             AdjustRangeToFit(set.GetMinBound(), set.GetMaxBound());
-            return FuzzySetTerm.CreateProxyForSet(set);
+            return FuzzySetTermProxy.CreateProxyForSet(set);
         }
 
         //fuzzify a value by calculating its DOM in each of this variable's subsets

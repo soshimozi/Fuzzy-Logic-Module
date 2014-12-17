@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml;
-using System.Xml.Linq;
-using FuzzyLib.Variables;
+using FuzzyLib.Object;
+using FuzzyLib.Sets;
 
 namespace FuzzyLib.Statement
 {
-    public class FuzzyXmlLoader
+    public class FuzzyXmlLoader<T>
     {
         private readonly IParser _parser;
-        private readonly FuzzyModule _module;
+        private readonly FuzzyObject<T> _module;
 
-        public FuzzyXmlLoader(IParser parser, FuzzyModule module)
+        public FuzzyXmlLoader(IParser parser, FuzzyObject<T> module)
         {
             _parser = parser;
             _module = module;
@@ -42,11 +40,12 @@ namespace FuzzyLib.Statement
 
         private void ReadRules(XmlNode moduleNode)
         {
-            ProcessNodeList<XmlNode>(moduleNode, "FuzzyRules/Rule", (n) =>
+            ProcessNodeList<XmlNode>(moduleNode, "FuzzyRules/Rule", n =>
             {
                 var ruleText = n.FirstChild.InnerText;
 
                 var rule = _parser.ParseStatement(ruleText);
+                _module.AddRule(rule.Item1, rule.Item2);
 
             });
         }
@@ -55,10 +54,10 @@ namespace FuzzyLib.Statement
         {
             var variables = new List<string>();
 
-            ProcessNodeList<XmlNode>(doc, "FuzzyVariables/FuzzyVariable", (n) =>
+            ProcessNodeList<XmlNode>(doc, "FuzzyVariables/FuzzyVariable", n =>
             {
                 var name = GetAttributeValue("name", n);
-                _module.CreateFLV(name);
+                _module.DefineVariable(name);
                 variables.Add(name);
             });
 
@@ -69,7 +68,7 @@ namespace FuzzyLib.Statement
                 ProcessNodeList<XmlNode>(
                     doc, 
                     string.Format("FuzzyVariables/FuzzyVariable[@name='{0}']/Terms/Term", variableName),
-                    (n) => ParseTerm(name, n));
+                    n => ParseTerm(name, n));
             }
         }
 
@@ -113,9 +112,7 @@ namespace FuzzyLib.Statement
             if (shapeType == null) return;
 
             var shape = MakeShape(shapeNode, shapeType);
-            _module[variable].AddFuzzySet(setName, shape);
-
-            //_manager.AddFuzzySet(setName, variable, shape);
+            _module.AddFuzzySet(setName, variable, shape);
         }
 
         private static FuzzySet MakeShape(XmlNode shapeNode, Type shapeType)
@@ -123,7 +120,7 @@ namespace FuzzyLib.Statement
             // make collection of parameters
             var parameters = new List<ParameterInfo>();
 
-            ProcessNodeList<XmlNode>(shapeNode, "parameters/add", (n) =>
+            ProcessNodeList<XmlNode>(shapeNode, "parameters/add", n =>
             {
                 var name = GetAttributeValue("name", n);
                 var value = GetAttributeValue("value", n);

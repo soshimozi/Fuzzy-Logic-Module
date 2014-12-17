@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<map>
-  <add expression="[a-zA-Z]" type="Letter" />
-  <add expression="\_" type="Special" />
-  <add expression="[0-9]" type="Digit" />
-  <add expression="[\(\)\:]" type="Special" />
-</map>

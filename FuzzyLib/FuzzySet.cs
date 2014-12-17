@@ -1,22 +1,10 @@
 ﻿using FuzzyLib.Sets;
 
-namespace FuzzyLib.Variables
+namespace FuzzyLib
 {
     public abstract class FuzzySet
     {
         private double _degreeOfMembership;
-
-        //public double MinBound
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        //public double MaxBound
-        //{
-        //    get;
-        //    private set;
-        //}
 
         public abstract double GetMinBound();
 
@@ -31,9 +19,6 @@ namespace FuzzyLib.Variables
         {
             _degreeOfMembership = 0;
             _representativeValue = representativeValue;
-
-            //MinBound = minBound;
-            //MaxBound = maxBound;
         }
 
         abstract public double CalculateDegreeOfMembership(double value);

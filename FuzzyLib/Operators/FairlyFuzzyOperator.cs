@@ -1,5 +1,4 @@
 ﻿using System;
-using FuzzyLib.Variables;
 
 namespace FuzzyLib.Operators
 {

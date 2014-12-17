@@ -1,6 +1,4 @@
-﻿using FuzzyLib.Variables;
-
-namespace FuzzyLib.Sets
+﻿namespace FuzzyLib.Sets
 {
     public class SingletonFuzzySet : FuzzySet
     {

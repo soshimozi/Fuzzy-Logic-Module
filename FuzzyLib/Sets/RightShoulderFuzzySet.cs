@@ -1,5 +1,4 @@
 ﻿using System;
-using FuzzyLib.Variables;
 
 namespace FuzzyLib.Sets
 {
@@ -9,8 +8,8 @@ namespace FuzzyLib.Sets
         private readonly double _peakPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
-        private double _max;
-        private double _min;
+        private readonly double _max;
+        private readonly double _min;
 
         public override double GetMinBound()
         {
