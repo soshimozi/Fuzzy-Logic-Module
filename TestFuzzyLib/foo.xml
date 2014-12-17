@@ -98,10 +98,45 @@
   <FuzzyRules>
     <Rule>
       <![CDATA[
+      IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
       IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) 
             OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) 
             OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Okay) 
       THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Low THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Okay THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Loads THEN Desirability:Desirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Low THEN Desirability:Desirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Okay THEN Desirability:VeryDesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Loads THEN Desirability:Desirable
       ]]>
     </Rule>
   </FuzzyRules>

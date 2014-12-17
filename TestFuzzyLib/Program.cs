@@ -37,12 +37,19 @@ namespace TestFuzzyLib
             
             xmlLoader.LoadXml(GetResourceTextFile("foo.xml"));
 
-            enemy2.DistanceToTarget = 10;
-            enemy2.AmmoStatus = 20;
+            enemy2.DistanceToTarget = 12;
+            enemy2.AmmoStatus = 12;
 
+            // this should be one of the variables specified
+            // otherwise an error could result
             fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv() );
+            Console.WriteLine("Desirability: {0}", enemy2.Desirability);
 
-            var desirablity = enemy2.Desirability;
+            enemy2.DistanceToTarget = 175;
+            enemy2.AmmoStatus = 43;
+            fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv());
+
+            Console.WriteLine("Desirability: {0}", enemy2.Desirability);
             //do
             //{
             //    currentToken = scanner.Get();
@@ -167,7 +174,7 @@ namespace TestFuzzyLib
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Okay"]), mod["Undesirable"]);
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Low"]), mod["Undesirable"]);
 
-            mod.AddRule(mod.WrapSet("Target_Far").Very(), mod["VeryDesirable"]);
+            //mod.AddRule(mod.WrapSet("Target_Far").Very(), mod["VeryDesirable"]);
 
             enemy.DistanceToTarget = 12;
             enemy.AmmoStatus = 12;
