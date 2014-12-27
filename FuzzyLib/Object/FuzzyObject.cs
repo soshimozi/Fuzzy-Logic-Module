@@ -25,12 +25,125 @@ namespace FuzzyLib.Object
             Module = module;
         }
 
-        //public FuzzyObject(T obj)
-        //{
-        //    WrappedObject = obj;
-        //    Module = new FuzzyModule();
-        //}
+        public FuzzyObject<T> AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        {
+            Module.AddRule(antecedent, consequence);
+            return this;
+        }
 
+        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
+        {
+            Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
+            return this;
+        }
+
+        public FuzzyTermDecorator<FuzzySetTermProxy> WrapSet(string name)
+        {
+            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTermProxy>(FuzzySets[name]) : null;
+        }
+
+
+        public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
+        {
+            var pi = expr.GetPropertyInfo();
+            if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
+            {
+                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
+
+            }
+                
+            return this;
+        }
+
+        public void AddFuzzySet(string setName, string variableName, FuzzySet set)
+        {
+            if (VariableReferences.ContainsKey(variableName))
+            {
+                VariableReferences[variableName].Variable.AddFuzzySet(setName, set);
+            }
+            
+        }
+
+        public FuzzySetTermProxy this[string name]
+        {
+            get { return FuzzyTerm(name); }
+        }
+
+        public FuzzySetTermProxy FuzzyTerm(string name)
+        {
+            return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
+        }
+
+        /// <summary>
+        /// Defines a variable for the property specified by the <paramref name="name"/> parameter
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>FuzzyVariable</returns>
+        public FuzzyVariable DefineVariable(string name)
+        {
+            // defines a variable for the property named in 'name'
+
+            var type = typeof (T);
+            var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == name);
+            if(prop == null) throw new ArgumentException("Property does not exist.", "name");
+
+            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, prop);
+        }
+
+        public FuzzyVariable DefineVariable<TProp>(Expression<Func<T, TProp>> func)
+        {
+            var propertyInfo = func.GetPropertyInfo();
+            var name = propertyInfo.Name;
+
+            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, propertyInfo);
+        }
+
+        private FuzzyVariable AddVariable(string name, PropertyInfo prop)
+        {
+            var variable = Module.CreateFLV(name);
+            VariableReferences.Add(name, new FuzzyVariableReference {PropertyInfo = prop, Variable = variable});
+            return variable;
+        }
+
+        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func)
+        {
+            var pi = func.GetPropertyInfo();
+
+            if (VariableReferences.ContainsKey(pi.Name))
+            {
+                double value;
+                if (double.TryParse(pi.GetValue(WrappedObject, null).ToString(), out value))
+                {
+                    Module.Fuzzify(pi.Name, value);
+                }
+                
+            }
+        }
+
+        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func, TProp value)
+        {
+            var pi = func.GetPropertyInfo();
+
+            if (VariableReferences.ContainsKey(pi.Name))
+            {
+                pi.SetValue(WrappedObject, value, null);
+            }
+        }
+
+        public void DeFuzzify<TProp>(Expression<Func<T, TProp>> func, Expression<Func<FuzzyVariable, double>> method)
+        {
+            var pi = func.GetPropertyInfo();
+
+            var defuzzy = Module.DeFuzzify(pi.Name, method);
+            pi.SetValue(WrappedObject, defuzzy, null);
+        }
+
+        public dynamic GetDynamic()
+        {
+            return new DynamicWrapper<FuzzySetTermProxy>(FuzzySets);
+        }
+
+        #region Compile Overrides
         public FuzzyObject<T> Compile<T1>(Expression<Func<T, T1>> func)
         {
             // fuzzfy
@@ -138,144 +251,7 @@ namespace FuzzyLib.Object
 
             return this;
         }
-
-
-        public FuzzyObject<T> AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
-        {
-            Module.AddRule(antecedent, consequence);
-            return this;
-        }
-
-        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
-        {
-            Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
-            return this;
-        }
-
-        public FuzzyTermDecorator<FuzzySetTermProxy> WrapSet(string name)
-        {
-            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTermProxy>(FuzzySets[name]) : null;
-        }
-
-        public FuzzyTermDecorator<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
-        {
-            return new FuzzyTermDecorator<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
-        }
-
-        public FuzzyTermDecorator<FuzzyOperatorOr> Or(FuzzyTerm lhs, FuzzyTerm rhs)
-        {
-            return new FuzzyTermDecorator<FuzzyOperatorOr>(FuzzyOperator.Or(lhs, rhs));
-        }
-
-        public FuzzyTermDecorator<FairlyFuzzyOperator> Fairly(FuzzyTerm term)
-        {
-            return new FuzzyTermDecorator<FairlyFuzzyOperator>(FuzzyOperator.Fairly(term));
-        }
-
-        public FuzzyTermDecorator<VeryFuzzyOperator> Very(FuzzyTerm term)
-        {
-            return new FuzzyTermDecorator<VeryFuzzyOperator>(FuzzyOperator.Very(term));
-        }
-
-        public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
-        {
-            var pi = expr.GetPropertyInfo();
-            if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
-            {
-                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
-
-            }
-                
-            return this;
-        }
-
-        public void AddFuzzySet(string setName, string variableName, FuzzySet set)
-        {
-            if (VariableReferences.ContainsKey(variableName))
-            {
-                VariableReferences[variableName].Variable.AddFuzzySet(setName, set);
-            }
-            
-        }
-
-        public FuzzySetTermProxy this[string name]
-        {
-            get { return FuzzyTerm(name); }
-        }
-
-        public FuzzySetTermProxy FuzzyTerm(string name)
-        {
-            return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
-        }
-
-        /// <summary>
-        /// Defines a variable for the property specified by the <paramref name="name"/> parameter
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns>FuzzyVariable</returns>
-        public FuzzyVariable DefineVariable(string name)
-        {
-            // defines a variable for the property named in 'name'
-
-            var type = typeof (T);
-            var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == name);
-            if(prop == null) throw new ArgumentException("Property does not exist.", "name");
-
-            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, prop);
-        }
-
-        private FuzzyVariable AddVariable(string name, PropertyInfo prop)
-        {
-            var variable = Module.CreateFLV(name);
-            VariableReferences.Add(name, new FuzzyVariableReference {PropertyInfo = prop, Variable = variable});
-            return variable;
-        }
-
-        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func)
-        {
-            var pi = func.GetPropertyInfo();
-
-            if (VariableReferences.ContainsKey(pi.Name))
-            {
-                double value;
-                if (double.TryParse(pi.GetValue(WrappedObject, null).ToString(), out value))
-                {
-                    Module.Fuzzify(pi.Name, value);
-                }
-                
-            }
-        }
-
-        public void DeFuzzify<TProp>(Expression<Func<T, TProp>> func, Expression<Func<FuzzyVariable, double>> method)
-        {
-            var pi = func.GetPropertyInfo();
-
-            var defuzzy = Module.DeFuzzify(pi.Name, method);
-            pi.SetValue(WrappedObject, defuzzy, null);
-        }
-
-        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func, TProp value)
-        {
-            var pi = func.GetPropertyInfo();
-
-            if (VariableReferences.ContainsKey(pi.Name))
-            {
-                pi.SetValue(WrappedObject, value, null);
-            }
-        }
-
-        public FuzzyVariable DefineVariable<TProp>(Expression<Func<T, TProp>> func)
-        {
-            var propertyInfo = func.GetPropertyInfo();
-            var name = propertyInfo.Name;
-
-            return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, propertyInfo);
-        }
-
-        public dynamic GetDynamic()
-        {
-            return new DynamicWrapper<FuzzySetTermProxy>(FuzzySets);
-        }
+        #endregion
 
         public class FuzzyVariableReference
         {
