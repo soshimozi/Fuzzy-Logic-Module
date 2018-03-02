@@ -22,7 +22,7 @@ namespace FuzzyLib.Statement
             return VariableReferences.ContainsKey(name) ? VariableReferences[name] : AddVariable(name);
         }
 
-        public FuzzySet AddFuzzySet(string name, string variable, FuzzySet set)
+        public IFuzzySet AddFuzzySet(string name, string variable, IFuzzySet set)
         {
             var fullname = string.Format("{0}:{1}", variable, name);
 
@@ -32,7 +32,7 @@ namespace FuzzyLib.Statement
             return set;
         }
 
-        public FuzzySet AddFuzzySet(string name, string variable, Func<double, double, double, FuzzySet> setfunc, int min, int peak, int max)
+        public IFuzzySet AddFuzzySet(string name, string variable, Func<double, double, double, IFuzzySet> setfunc, int min, int peak, int max)
         {
             var fullname = string.Format("{0}:{1}", variable, name);
 

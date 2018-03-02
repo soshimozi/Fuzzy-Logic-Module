@@ -2,26 +2,36 @@
 
 namespace FuzzyLib.Sets
 {
-    public class RightShoulderFuzzySet : FuzzySet
+    public class RightShoulderFuzzySet : IFuzzySet
     {
         //the values that define the shape of this FLV
         private readonly double _peakPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
-        private readonly double _max;
-        private readonly double _min;
 
-        public override double GetMinBound()
+        private double _degreeOfMembership;
+
+        public double MinBound
         {
-            return _min;
+            get;
+            private set;
         }
 
-        public override double GetMaxBound()
+        public double MaxBound
         {
-            return _max;
+            get;
+            private set;
         }
 
-        public override double CalculateDegreeOfMembership(double value)
+        public double DegreeOfMembership { get => _degreeOfMembership; set => _degreeOfMembership = value.Range(0, 1.0d); }
+
+        public double RepresentativeValue
+        {
+            get;
+            private set;
+        }
+
+        public double CalculateDegreeOfMembership(double value)
         {
             //test for the case where the left or right offsets are zero
             //(to prevent divide by zero errors below)
@@ -47,16 +57,28 @@ namespace FuzzyLib.Sets
             return 0;
         }
 
-        public RightShoulderFuzzySet(double min,
-                               double peak,
-                               double max)
-            : base(((peak + (max - peak)) + peak) / 2)
+        public void Clear()
         {
-            _min = min;
-            _max = max;
+            _degreeOfMembership = 0;
+        }
+
+        public RightShoulderFuzzySet(double min,
+                                double max,
+                                double peak)
+        {
+            RepresentativeValue = ((peak + (max - peak)) + peak) / 2;
+            MinBound = min;
+            MaxBound = max;
+
             _peakPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;
+        }
+
+        public void MergeWithDegreeOfMembership(double value)
+        {
+            if (value > _degreeOfMembership)
+                _degreeOfMembership = value;
         }
 
     }

@@ -41,25 +41,35 @@ namespace FuzzyLib.Object.Generic
         }
 
 
-        public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
+        //public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : IFuzzySet
+        //{
+        //    var pi = expr.GetPropertyInfo();
+        //    if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
+        //    {
+        //        FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
+
+        //    }
+
+        //    return this;
+        //}
+
+        public FuzzyObject<T> AddFuzzySet<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySet set)
         {
             var pi = expr.GetPropertyInfo();
             if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
             {
-                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, setfunc.Invoke(min, peak, max)));
-
+                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, set));
             }
-                
+
             return this;
         }
 
-        public void AddFuzzySet(string setName, string variableName, FuzzySet set)
+        public void AddFuzzySetByName(string setName, string variableName, IFuzzySet set)
         {
             if (VariableReferences.ContainsKey(variableName))
             {
                 VariableReferences[variableName].Variable.AddFuzzySet(setName, set);
             }
-            
         }
 
         public FuzzySetTermProxy this[string name]

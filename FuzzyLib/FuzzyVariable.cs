@@ -6,7 +6,7 @@ namespace FuzzyLib
 {
     public class FuzzyVariable
     {
-        private readonly Dictionary<string, FuzzySet> _memberSets = new Dictionary<string,FuzzySet>();
+        private readonly Dictionary<string, IFuzzySet> _memberSets = new Dictionary<string, IFuzzySet>();
 
         private double _minimumRange;
         private double _maximumRange;
@@ -26,10 +26,10 @@ namespace FuzzyLib
 
         public FuzzySetTermProxy AddFuzzySet(
             string name, 
-            FuzzySet set)
+            IFuzzySet set)
         {
             _memberSets.Add(name, set);
-            AdjustRangeToFit(set.GetMinBound(), set.GetMaxBound());
+            AdjustRangeToFit(set.MinBound, set.MaxBound);
             return FuzzySetTermProxy.CreateProxyForSet(set);
         }
 
@@ -41,7 +41,7 @@ namespace FuzzyLib
 
 
             //for each set in the flv calculate the DOM for the given value
-            foreach (FuzzySet set in _memberSets.Values)
+            foreach (var set in _memberSets.Values)
             {
                 set.DegreeOfMembership = set.CalculateDegreeOfMembership(value);
             }
@@ -53,7 +53,7 @@ namespace FuzzyLib
             double bottom = 0.0;
             double top = 0.0;
 
-            foreach (FuzzySet set in _memberSets.Values)
+            foreach (var set in _memberSets.Values)
             {
                 bottom += set.DegreeOfMembership;
                 top += set.RepresentativeValue * set.DegreeOfMembership;
@@ -89,7 +89,7 @@ namespace FuzzyLib
                 //for each set get the contribution to the area. This is the lower of the 
                 //value returned from CalculateDOM or the actual DOM of the fuzzified 
                 //value itself   
-                foreach (FuzzySet set in _memberSets.Values)
+                foreach (var set in _memberSets.Values)
                 {
                     double contribution
                         = Math.Min(set.CalculateDegreeOfMembership(_minimumRange + samp * stepSize), set.DegreeOfMembership);

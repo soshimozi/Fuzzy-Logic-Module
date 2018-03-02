@@ -40,8 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IFuzzySet.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />
+    <Compile Include="IntegerExtensions.cs" />
     <Compile Include="Object\FuzzyObject.cs" />
     <Compile Include="Operators\FairlyFuzzyOperator.cs" />
     <Compile Include="FuzzyModule.cs" />
@@ -66,7 +68,6 @@
     <Compile Include="Statement\TokenCode.cs" />
     <Compile Include="Statement\TokenType.cs" />
     <Compile Include="Statement\WordToken.cs" />
-    <Compile Include="FuzzySet.cs" />
     <Compile Include="FuzzySetVariableProxy.cs" />
     <Compile Include="Decorator\FuzzyTermDecorator.cs" />
     <Compile Include="Object\FuzzyVariableReference.cs" />

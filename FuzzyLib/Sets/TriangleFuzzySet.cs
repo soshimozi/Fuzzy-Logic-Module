@@ -3,39 +3,50 @@
 namespace FuzzyLib.Sets
 {
 
-    public class TriangleFuzzySet : FuzzySet
+    public class TriangleFuzzySet : IFuzzySet
     {
         //the values that define the shape of this FLV
         private readonly double _peakPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
-        private readonly double _min;
-        private readonly double _max;
 
-        public override double GetMinBound()
+        private double _degreeOfMembership;
+
+        public double MinBound
         {
-            return _min;
+            get;
+            private set;
         }
 
-        public override double GetMaxBound()
+        public double MaxBound
         {
-            return _max;
+            get;
+            private set;
         }
+
+        public double RepresentativeValue
+        {
+            get;
+            private set;
+        }
+
+        public double DegreeOfMembership { get => _degreeOfMembership; set => _degreeOfMembership = value.Range(0, 1.0d); }
 
         public TriangleFuzzySet(double min,
-                            double peak,
-                            double max)
-            : base(peak)
+                            double max,
+                            double peak)
         {
-            _min = min;
-            _max = max;
+
+            MinBound = min;
+            MaxBound = max;
+            RepresentativeValue = peak;
 
             _peakPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;
         }
 
-        public override double CalculateDegreeOfMembership(double value)
+        public double CalculateDegreeOfMembership(double value)
         {
             //test for the case where the triangle's left or right offsets are zero
             //(to prevent divide by zero errors below)
@@ -61,6 +72,17 @@ namespace FuzzyLib.Sets
             //find DOM if right of center
             grad = 1.0 / -_rightOffset;
             return grad * (value - _peakPoint) + 1.0;
+        }
+
+        public void Clear()
+        {
+            _degreeOfMembership = 0.0;
+        }
+
+        public void MergeWithDegreeOfMembership(double value)
+        {
+            if (value > _degreeOfMembership)
+                _degreeOfMembership = value;
         }
     }
 }

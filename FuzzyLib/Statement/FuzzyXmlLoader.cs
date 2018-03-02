@@ -113,10 +113,10 @@ namespace FuzzyLib.Statement
             if (shapeType == null) return;
 
             var shape = MakeShape(shapeNode, shapeType);
-            _module.AddFuzzySet(setName, variable, shape);
+            _module.AddFuzzySetByName(setName, variable, shape);
         }
 
-        private static FuzzySet MakeShape(XmlNode shapeNode, Type shapeType)
+        private static IFuzzySet MakeShape(XmlNode shapeNode, Type shapeType)
         {
             // make collection of parameters
             var parameters = new List<ParameterInfo>();
@@ -145,8 +145,8 @@ namespace FuzzyLib.Statement
                 if (constructor == null) return null;
 
                 var constructorParameters = BuildConstructorParameters(constructor, parameters);
-                if(typeof(FuzzySet).IsAssignableFrom(shapeType))
-                    return (FuzzySet)constructor.Invoke(constructorParameters);
+                if(typeof(IFuzzySet).IsAssignableFrom(shapeType))
+                    return constructor.Invoke(constructorParameters) as IFuzzySet;
             }
 
             return null;

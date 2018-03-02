@@ -1,25 +1,38 @@
 ﻿namespace FuzzyLib.Sets
 {
-    public class SingletonFuzzySet : FuzzySet
+    public class SingletonFuzzySet : IFuzzySet
     {
         //the values that define the shape of this FLV
         private readonly double _midPoint;
         private readonly double _leftOffset;
         private readonly double _rightOffset;
-        private readonly double _min;
-        private readonly double _max;
+        private double _degreeOfMembership;
 
-        public override double GetMinBound()
+        public double MinBound
         {
-            return _min;
+            get;
+            private set;
         }
 
-        public override double GetMaxBound()
+        public double MaxBound
         {
-            return _max;
+            get;
+            private set;
         }
 
-        public override double CalculateDegreeOfMembership(double value)
+        public double DegreeOfMembership
+        {
+            get => _degreeOfMembership;
+            set => _degreeOfMembership = value.Range(0, 1.0d);
+        }
+
+        public double RepresentativeValue
+        {
+            get;
+            private set;
+        }
+
+        public double CalculateDegreeOfMembership(double value)
         {
             if ((value >= _midPoint - _leftOffset) &&
                  (value <= _midPoint + _rightOffset))
@@ -31,17 +44,27 @@
             return 0.0;
         }
 
+        public void Clear()
+        {
+            _degreeOfMembership = 0.0d;
+        }
 
         public SingletonFuzzySet(double min,
-                             double peak,
-                             double max)
-            : base(peak)
+                                double max,
+                                double peak)
         {
-            _min = min;
-            _max = max;
+            RepresentativeValue = peak;
+            MinBound = min;
+            MaxBound = max;
             _midPoint = peak;
             _leftOffset = peak - min;
             _rightOffset = max - peak;
+        }
+
+        public void MergeWithDegreeOfMembership(double value)
+        {
+            if (value > _degreeOfMembership)
+                _degreeOfMembership = value;
         }
     }
 }

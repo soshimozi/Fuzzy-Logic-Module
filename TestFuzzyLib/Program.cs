@@ -3,6 +3,7 @@ using System.IO;
 using FuzzyLib;
 using FuzzyLib.Object;
 using FuzzyLib.Operators;
+using FuzzyLib.Sets;
 using FuzzyLib.Statement;
 using Observables;
 
@@ -48,25 +49,26 @@ namespace TestFuzzyLib
             mod.DefineVariable(p => p.Desirability);
             mod.DefineVariable(p => p.Skill);
 
-            mod.AddFuzzySet("Very_Skilled", p => p.Skill, FuzzySet.CreateRightShoulderSet, 20, 80, 100)
-                .AddFuzzySet("Skilled", p => p.Skill, FuzzySet.CreateTriangularSet, 10, 20, 30)
-                .AddFuzzySet("Low_Skilled", p => p.Skill, FuzzySet.CreateLeftShoulderSet, 0, 5, 20);
 
-            mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, FuzzySet.CreateRightShoulderSet, 10, 20, 100)
-                .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 10, 30)
-                .AddFuzzySet("Ammo_Low", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 0, 10);
+            mod.AddFuzzySet("Very_Skilled", (p) => p.Skill, CreateRightShoulderSet(20, 100, 80))
+                .AddFuzzySet("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
+                .AddFuzzySet("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
 
-            mod.AddFuzzySet("Undesirable", p => p.Desirability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50)
-                .AddFuzzySet("Desirable", p => p.Desirability, FuzzySet.CreateTriangularSet, 25, 50, 75)
-                .AddFuzzySet("VeryDesirable", p => p.Desirability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
+            mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
+                .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
+                .AddFuzzySet("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
 
-            mod.AddFuzzySet("Target_Close", p => p.DistanceToTarget, FuzzySet.CreateLeftShoulderSet, 0, 25, 150)
-                .AddFuzzySet("Target_Medium", p => p.DistanceToTarget, FuzzySet.CreateTriangularSet, 25, 150, 300)
-                .AddFuzzySet("Target_Far", p => p.DistanceToTarget, FuzzySet.CreateRightShoulderSet, 150, 300, 1000);
+            mod.AddFuzzySet("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
+                .AddFuzzySet("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
+                .AddFuzzySet("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
 
-            mod.AddFuzzySet("Undesirable", p => p.Desirability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50);
-            mod.AddFuzzySet("Desirable", p => p.Desirability, FuzzySet.CreateTriangularSet, 25, 50, 75);
-            mod.AddFuzzySet("VeryDesirable", p => p.Desirability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
+            mod.AddFuzzySet("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
+                .AddFuzzySet("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
+                .AddFuzzySet("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
+
+            mod.AddFuzzySet("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
+            mod.AddFuzzySet("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
+            mod.AddFuzzySet("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
 
             dynamic modwrapper = mod.GetDynamic();
             mod.AddRule(
@@ -113,6 +115,26 @@ namespace TestFuzzyLib
                     return sr.ReadToEnd();
                 }
             }
+        }
+
+        public static IFuzzySet CreateTriangularSet(double min, double peak, double max)
+        {
+            return new TriangleFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateLeftShoulderSet(double min, double peak, double max)
+        {
+            return new LeftShoulderFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateRightShoulderSet(double min, double peak, double max)
+        {
+            return new RightShoulderFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateSingletonShoulderSet(double min, double peak, double max)
+        {
+            return new SingletonFuzzySet(min, max, peak);
         }
     }
 }

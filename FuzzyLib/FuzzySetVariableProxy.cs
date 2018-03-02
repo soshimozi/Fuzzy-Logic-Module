@@ -4,18 +4,18 @@ namespace FuzzyLib
 {
     public class FuzzySetTermProxy : FuzzyTerm
     {
-        private readonly FuzzySet _set;
-        private FuzzySetTermProxy(FuzzySet set)
+        private readonly IFuzzySet _set;
+        private FuzzySetTermProxy(IFuzzySet set)
         {
             _set = set;
         }
 
-        public static FuzzySetTermProxy CreateProxyForSet(FuzzySet set)
+        public static FuzzySetTermProxy CreateProxyForSet(IFuzzySet set)
         {
             return new FuzzySetTermProxy(set);
         }
 
-        public FuzzySet Set { get { return _set; } }
+        public IFuzzySet Set { get { return _set; } }
 
         public override double DegreeOfMembership
         {
