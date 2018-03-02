@@ -5,33 +5,35 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FuzzyLib.Decorator;
 using FuzzyLib.Infrastructure;
-using FuzzyLib.Operators;
-using FuzzyLib.Sets;
 
 namespace FuzzyLib.Object
 {
-    public class FuzzyObject<T>
+    public class FuzzyObject
     {
         protected readonly FuzzyModule Module;
-        protected readonly T WrappedObject;
+        protected readonly object WrappedObject;
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
 
         protected readonly Dictionary<string, FuzzySetTermProxy> FuzzySets = new Dictionary<string, FuzzySetTermProxy>();
 
-        public FuzzyObject(T obj, FuzzyModule module)
+        protected readonly Type ObjectType;
+
+        public FuzzyObject(object obj, FuzzyModule module)
         {
             WrappedObject = obj;
             Module = module;
+
+            ObjectType = obj.GetType();
         }
 
-        public FuzzyObject<T> AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        public FuzzyObject AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
         {
             Module.AddRule(antecedent, consequence);
             return this;
         }
 
-        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
+        public FuzzyObject AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
         {
             Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
             return this;
@@ -43,7 +45,7 @@ namespace FuzzyLib.Object
         }
 
 
-        public FuzzyObject<T> AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<T, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
+        public FuzzyObject AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<object, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : FuzzySet
         {
             var pi = expr.GetPropertyInfo();
             if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
@@ -83,14 +85,14 @@ namespace FuzzyLib.Object
         {
             // defines a variable for the property named in 'name'
 
-            var type = typeof (T);
-            var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == name);
+            //var type = typeof (T);
+            var prop = ObjectType.GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == name);
             if(prop == null) throw new ArgumentException("Property does not exist.", "name");
 
             return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, prop);
         }
 
-        public FuzzyVariable DefineVariable<TProp>(Expression<Func<T, TProp>> func)
+        public FuzzyVariable DefineVariable<TProp>(Expression<Func<object, TProp>> func)
         {
             var propertyInfo = func.GetPropertyInfo();
             var name = propertyInfo.Name;
@@ -105,7 +107,7 @@ namespace FuzzyLib.Object
             return variable;
         }
 
-        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func)
+        public void Fuzzify<TProp>(Expression<Func<object, TProp>> func)
         {
             var pi = func.GetPropertyInfo();
 
@@ -120,7 +122,7 @@ namespace FuzzyLib.Object
             }
         }
 
-        public void Fuzzify<TProp>(Expression<Func<T, TProp>> func, TProp value)
+        public void Fuzzify<TProp>(Expression<Func<object, TProp>> func, TProp value)
         {
             var pi = func.GetPropertyInfo();
 
@@ -130,7 +132,7 @@ namespace FuzzyLib.Object
             }
         }
 
-        public void DeFuzzify<TProp>(Expression<Func<T, TProp>> func, Expression<Func<FuzzyVariable, double>> method)
+        public void DeFuzzify<TProp>(Expression<Func<object, TProp>> func, Expression<Func<FuzzyVariable, double>> method)
         {
             var pi = func.GetPropertyInfo();
 
@@ -144,7 +146,7 @@ namespace FuzzyLib.Object
         }
 
         #region Compile Overrides
-        public FuzzyObject<T> Compile<T1>(Expression<Func<T, T1>> func)
+        public FuzzyObject Compile<T1>(Expression<Func<object, T1>> func)
         {
             // fuzzfy
             Fuzzify(func);
@@ -152,7 +154,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2)
+        public FuzzyObject Compile<T1, T2>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2)
         {
             // fuzzfy
             Fuzzify(func);
@@ -161,7 +163,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3)
+        public FuzzyObject Compile<T1, T2, T3>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3)
         {
             // fuzzfy
             Fuzzify(func);
@@ -171,7 +173,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4)
+        public FuzzyObject Compile<T1, T2, T3, T4>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4)
         {
             // fuzzfy
             Fuzzify(func);
@@ -182,7 +184,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5)
+        public FuzzyObject Compile<T1, T2, T3, T4, T5>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4, Expression<Func<object, T5>> func5)
         {
             // fuzzfy
             Fuzzify(func);
@@ -194,7 +196,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6)
+        public FuzzyObject Compile<T1, T2, T3, T4, T5, T6>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4, Expression<Func<object, T5>> func5, Expression<Func<object, T6>> func6)
         {
             // fuzzfy
             Fuzzify(func);
@@ -207,7 +209,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7)
+        public FuzzyObject Compile<T1, T2, T3, T4, T5, T6, T7>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4, Expression<Func<object, T5>> func5, Expression<Func<object, T6>> func6, Expression<Func<object, T7>> func7)
         {
             // fuzzfy
             Fuzzify(func);
@@ -221,7 +223,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7, Expression<Func<T, T8>> func8)
+        public FuzzyObject Compile<T1, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4, Expression<Func<object, T5>> func5, Expression<Func<object, T6>> func6, Expression<Func<object, T7>> func7, Expression<Func<object, T8>> func8)
         {
             // fuzzfy
             Fuzzify(func);
@@ -236,7 +238,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7, Expression<Func<T, T8>> func8, Expression<Func<T, T9>> func9)
+        public FuzzyObject Compile<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<object, T1>> func, Expression<Func<object, T2>> func2, Expression<Func<object, T3>> func3, Expression<Func<object, T4>> func4, Expression<Func<object, T5>> func5, Expression<Func<object, T6>> func6, Expression<Func<object, T7>> func7, Expression<Func<object, T8>> func8, Expression<Func<object, T9>> func9)
         {
             // fuzzfy
             Fuzzify(func);
@@ -253,10 +255,12 @@ namespace FuzzyLib.Object
         }
         #endregion
 
-        public class FuzzyVariableReference
-        {
-            public FuzzyVariable Variable { get; set; }
-            public PropertyInfo PropertyInfo { get; set; }
-        }    
     }
+
+    //public class FuzzyVariableReference
+    //{
+    //    public FuzzyVariable Variable { get; set; }
+    //    public PropertyInfo PropertyInfo { get; set; }
+    //}    
+
 }

@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FuzzyLogicModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="FuzzyLogicModelStoreContainer">
+          <EntitySet Name="FuzzyModule" EntityType="FuzzyLogicModel.Store.FuzzyModule" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FuzzyRule" EntityType="FuzzyLogicModel.Store.FuzzyRule" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FuzzyShape" EntityType="FuzzyLogicModel.Store.FuzzyShape" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FuzzyTerm" EntityType="FuzzyLogicModel.Store.FuzzyTerm" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FuzzyTermParameter" EntityType="FuzzyLogicModel.Store.FuzzyTermParameter" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FuzzyVariable" EntityType="FuzzyLogicModel.Store.FuzzyVariable" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_FuzzyRule_FuzzyModule" Association="FuzzyLogicModel.Store.FK_FuzzyRule_FuzzyModule">
+            <End Role="FuzzyModule" EntitySet="FuzzyModule" />
+            <End Role="FuzzyRule" EntitySet="FuzzyRule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTerm_FuzzyShape" Association="FuzzyLogicModel.Store.FK_FuzzyTerm_FuzzyShape">
+            <End Role="FuzzyShape" EntitySet="FuzzyShape" />
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTerm_FuzzyVariable" Association="FuzzyLogicModel.Store.FK_FuzzyTerm_FuzzyVariable">
+            <End Role="FuzzyVariable" EntitySet="FuzzyVariable" />
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTermParameter_FuzzyTerm" Association="FuzzyLogicModel.Store.FK_FuzzyTermParameter_FuzzyTerm">
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerm" />
+            <End Role="FuzzyTermParameter" EntitySet="FuzzyTermParameter" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyVariable_FuzzyModule" Association="FuzzyLogicModel.Store.FK_FuzzyVariable_FuzzyModule">
+            <End Role="FuzzyModule" EntitySet="FuzzyModule" />
+            <End Role="FuzzyVariable" EntitySet="FuzzyVariable" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="FuzzyModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="DataType" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuzzyRule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ModuleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuzzyShape">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="DataType" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuzzyTerm">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="ShapeId" Type="int" Nullable="false" />
+          <Property Name="VariableId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuzzyTermParameter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="Value" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="TermId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuzzyVariable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="ModuleId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_FuzzyRule_FuzzyModule">
+          <End Role="FuzzyModule" Type="FuzzyLogicModel.Store.FuzzyModule" Multiplicity="1" />
+          <End Role="FuzzyRule" Type="FuzzyLogicModel.Store.FuzzyRule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyRule">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTerm_FuzzyShape">
+          <End Role="FuzzyShape" Type="FuzzyLogicModel.Store.FuzzyShape" Multiplicity="1" />
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.Store.FuzzyTerm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyShape">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTerm">
+              <PropertyRef Name="ShapeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTerm_FuzzyVariable">
+          <End Role="FuzzyVariable" Type="FuzzyLogicModel.Store.FuzzyVariable" Multiplicity="1" />
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.Store.FuzzyTerm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyVariable">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTerm">
+              <PropertyRef Name="VariableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTermParameter_FuzzyTerm">
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.Store.FuzzyTerm" Multiplicity="1" />
+          <End Role="FuzzyTermParameter" Type="FuzzyLogicModel.Store.FuzzyTermParameter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyTerm">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTermParameter">
+              <PropertyRef Name="TermId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyVariable_FuzzyModule">
+          <End Role="FuzzyModule" Type="FuzzyLogicModel.Store.FuzzyModule" Multiplicity="1" />
+          <End Role="FuzzyVariable" Type="FuzzyLogicModel.Store.FuzzyVariable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyVariable">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="uspAddFuzzyModule" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Type" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="uspAddFuzzyRule" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Text" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ModuleId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="uspAddFuzzyShape" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Type" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="uspAddFuzzyTerm" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="ShapeId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="uspAddFuzzyTermParameter" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Value" Type="nvarchar" Mode="In" />
+          <Parameter Name="TermId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="uspAddFuzzyVariable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="ModuleId" Type="int" Mode="In" />
+        </Function>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FuzzyLogicModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FuzzyLogicEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="FuzzyModules" EntityType="FuzzyLogicModel.FuzzyModule" />
+          <EntitySet Name="FuzzyRules" EntityType="FuzzyLogicModel.FuzzyRule" />
+          <EntitySet Name="FuzzyShapes" EntityType="FuzzyLogicModel.FuzzyShape" />
+          <EntitySet Name="FuzzyTerms" EntityType="FuzzyLogicModel.FuzzyTerm" />
+          <EntitySet Name="FuzzyTermParameters" EntityType="FuzzyLogicModel.FuzzyTermParameter" />
+          <EntitySet Name="FuzzyVariables" EntityType="FuzzyLogicModel.FuzzyVariable" />
+          <AssociationSet Name="FK_FuzzyRule_FuzzyModule" Association="FuzzyLogicModel.FK_FuzzyRule_FuzzyModule">
+            <End Role="FuzzyModule" EntitySet="FuzzyModules" />
+            <End Role="FuzzyRule" EntitySet="FuzzyRules" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyVariable_FuzzyModule" Association="FuzzyLogicModel.FK_FuzzyVariable_FuzzyModule">
+            <End Role="FuzzyModule" EntitySet="FuzzyModules" />
+            <End Role="FuzzyVariable" EntitySet="FuzzyVariables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTerm_FuzzyShape" Association="FuzzyLogicModel.FK_FuzzyTerm_FuzzyShape">
+            <End Role="FuzzyShape" EntitySet="FuzzyShapes" />
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTerm_FuzzyVariable" Association="FuzzyLogicModel.FK_FuzzyTerm_FuzzyVariable">
+            <End Role="FuzzyVariable" EntitySet="FuzzyVariables" />
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FuzzyTermParameter_FuzzyTerm" Association="FuzzyLogicModel.FK_FuzzyTermParameter_FuzzyTerm">
+            <End Role="FuzzyTerm" EntitySet="FuzzyTerms" />
+            <End Role="FuzzyTermParameter" EntitySet="FuzzyTermParameters" />
+          </AssociationSet>
+          <FunctionImport Name="uspAddFuzzyModule">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Type" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="uspAddFuzzyRule">
+            <Parameter Name="Text" Mode="In" Type="String" />
+            <Parameter Name="ModuleId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="uspAddFuzzyShape">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Type" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="uspAddFuzzyTerm">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="ShapeId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="uspAddFuzzyTermParameter">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Value" Mode="In" Type="String" />
+            <Parameter Name="TermId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="uspAddFuzzyVariable">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="ModuleId" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="FuzzyModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="DataType" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="FuzzyRules" Relationship="FuzzyLogicModel.FK_FuzzyRule_FuzzyModule" FromRole="FuzzyModule" ToRole="FuzzyRule" />
+          <NavigationProperty Name="FuzzyVariables" Relationship="FuzzyLogicModel.FK_FuzzyVariable_FuzzyModule" FromRole="FuzzyModule" ToRole="FuzzyVariable" />
+        </EntityType>
+        <EntityType Name="FuzzyRule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="ModuleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FuzzyModule" Relationship="FuzzyLogicModel.FK_FuzzyRule_FuzzyModule" FromRole="FuzzyRule" ToRole="FuzzyModule" />
+        </EntityType>
+        <EntityType Name="FuzzyShape">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="DataType" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="FuzzyTerms" Relationship="FuzzyLogicModel.FK_FuzzyTerm_FuzzyShape" FromRole="FuzzyShape" ToRole="FuzzyTerm" />
+        </EntityType>
+        <EntityType Name="FuzzyTerm">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="ShapeId" Type="Int32" Nullable="false" />
+          <Property Name="VariableId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FuzzyShape" Relationship="FuzzyLogicModel.FK_FuzzyTerm_FuzzyShape" FromRole="FuzzyTerm" ToRole="FuzzyShape" />
+          <NavigationProperty Name="FuzzyVariable" Relationship="FuzzyLogicModel.FK_FuzzyTerm_FuzzyVariable" FromRole="FuzzyTerm" ToRole="FuzzyVariable" />
+          <NavigationProperty Name="FuzzyTermParameters" Relationship="FuzzyLogicModel.FK_FuzzyTermParameter_FuzzyTerm" FromRole="FuzzyTerm" ToRole="FuzzyTermParameter" />
+        </EntityType>
+        <EntityType Name="FuzzyTermParameter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="TermId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FuzzyTerm" Relationship="FuzzyLogicModel.FK_FuzzyTermParameter_FuzzyTerm" FromRole="FuzzyTermParameter" ToRole="FuzzyTerm" />
+        </EntityType>
+        <EntityType Name="FuzzyVariable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="ModuleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FuzzyModule" Relationship="FuzzyLogicModel.FK_FuzzyVariable_FuzzyModule" FromRole="FuzzyVariable" ToRole="FuzzyModule" />
+          <NavigationProperty Name="FuzzyTerms" Relationship="FuzzyLogicModel.FK_FuzzyTerm_FuzzyVariable" FromRole="FuzzyVariable" ToRole="FuzzyTerm" />
+        </EntityType>
+        <Association Name="FK_FuzzyRule_FuzzyModule">
+          <End Role="FuzzyModule" Type="FuzzyLogicModel.FuzzyModule" Multiplicity="1" />
+          <End Role="FuzzyRule" Type="FuzzyLogicModel.FuzzyRule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyRule">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyVariable_FuzzyModule">
+          <End Role="FuzzyModule" Type="FuzzyLogicModel.FuzzyModule" Multiplicity="1" />
+          <End Role="FuzzyVariable" Type="FuzzyLogicModel.FuzzyVariable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyVariable">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTerm_FuzzyShape">
+          <End Role="FuzzyShape" Type="FuzzyLogicModel.FuzzyShape" Multiplicity="1" />
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.FuzzyTerm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyShape">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTerm">
+              <PropertyRef Name="ShapeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTerm_FuzzyVariable">
+          <End Role="FuzzyVariable" Type="FuzzyLogicModel.FuzzyVariable" Multiplicity="1" />
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.FuzzyTerm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyVariable">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTerm">
+              <PropertyRef Name="VariableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FuzzyTermParameter_FuzzyTerm">
+          <End Role="FuzzyTerm" Type="FuzzyLogicModel.FuzzyTerm" Multiplicity="1" />
+          <End Role="FuzzyTermParameter" Type="FuzzyLogicModel.FuzzyTermParameter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FuzzyTerm">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FuzzyTermParameter">
+              <PropertyRef Name="TermId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FuzzyLogicModelStoreContainer" CdmEntityContainer="FuzzyLogicEntities">
+          <EntitySetMapping Name="FuzzyModules">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyModule">
+              <MappingFragment StoreEntitySet="FuzzyModule">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DataType" ColumnName="DataType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FuzzyRules">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyRule">
+              <MappingFragment StoreEntitySet="FuzzyRule">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FuzzyShapes">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyShape">
+              <MappingFragment StoreEntitySet="FuzzyShape">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DataType" ColumnName="DataType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FuzzyTerms">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyTerm">
+              <MappingFragment StoreEntitySet="FuzzyTerm">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ShapeId" ColumnName="ShapeId" />
+                <ScalarProperty Name="VariableId" ColumnName="VariableId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FuzzyTermParameters">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyTermParameter">
+              <MappingFragment StoreEntitySet="FuzzyTermParameter">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="TermId" ColumnName="TermId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FuzzyVariables">
+            <EntityTypeMapping TypeName="FuzzyLogicModel.FuzzyVariable">
+              <MappingFragment StoreEntitySet="FuzzyVariable">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyModule" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyModule" />
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyRule" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyRule" />
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyShape" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyShape" />
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyTerm" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyTerm" />
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyTermParameter" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyTermParameter" />
+          <FunctionImportMapping FunctionImportName="uspAddFuzzyVariable" FunctionName="FuzzyLogicModel.Store.uspAddFuzzyVariable" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,22 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Dynamic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Proxies;
-using System.Text;
-using System.Xml;
-using AspectOrientedProgramming;
 using FuzzyLib;
 using FuzzyLib.Object;
-using FuzzyLib.Sets;
+using FuzzyLib.Operators;
 using FuzzyLib.Statement;
 using Observables;
-using Observables.Annotations;
 
 namespace TestFuzzyLib
 {
@@ -82,9 +70,9 @@ namespace TestFuzzyLib
 
             dynamic modwrapper = mod.GetDynamic();
             mod.AddRule(
-                mod.Or(mod.And(modwrapper.Target_Close,modwrapper.Ammo_Low),
-                       mod.Or(mod.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
-                       mod.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
+                FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Low),
+                       FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
+                       FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
                 ),
                 modwrapper.Undesirable);
 

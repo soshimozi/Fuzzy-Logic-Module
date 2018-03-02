@@ -42,9 +42,10 @@
   <ItemGroup>
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />
+    <Compile Include="Object\FuzzyObject.cs" />
     <Compile Include="Operators\FairlyFuzzyOperator.cs" />
     <Compile Include="FuzzyModule.cs" />
-    <Compile Include="Object\FuzzyObject.cs" />
+    <Compile Include="Object\Generic\FuzzyObject.cs" />
     <Compile Include="Operators\FuzzyOperator.cs" />
     <Compile Include="Operators\FuzzyOperatorAND.cs" />
     <Compile Include="Operators\FuzzyOperatorOR.cs" />

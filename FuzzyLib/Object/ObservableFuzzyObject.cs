@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using FuzzyLib.Infrastructure;
+using FuzzyLib.Object.Generic;
 
 namespace FuzzyLib.Object
 {
