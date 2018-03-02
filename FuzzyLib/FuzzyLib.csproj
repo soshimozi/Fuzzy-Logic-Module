@@ -40,11 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AOP\DynamicProxy.cs" />
+    <Compile Include="AOP\IDynamicProxy.cs" />
     <Compile Include="IFuzzySet.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />
     <Compile Include="IntegerExtensions.cs" />
     <Compile Include="Object\FuzzyObject.cs" />
+    <Compile Include="AOP\BaseDynamicProxy.cs" />
+    <Compile Include="Observables\ObservableAttribute.cs" />
+    <Compile Include="Observables\ObservableDynamicProxy.cs" />
     <Compile Include="Operators\FairlyFuzzyOperator.cs" />
     <Compile Include="FuzzyModule.cs" />
     <Compile Include="Object\Generic\FuzzyObject.cs" />

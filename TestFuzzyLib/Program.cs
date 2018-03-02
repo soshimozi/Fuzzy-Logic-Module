@@ -2,10 +2,10 @@
 using System.IO;
 using FuzzyLib;
 using FuzzyLib.Object;
+using FuzzyLib.Observables;
 using FuzzyLib.Operators;
 using FuzzyLib.Sets;
 using FuzzyLib.Statement;
-using Observables;
 
 namespace TestFuzzyLib
 {

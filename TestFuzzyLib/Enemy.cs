@@ -1,10 +1,11 @@
-using System;
-using System.ComponentModel;
-using Observables;
+using FuzzyLib.AOP;
+using FuzzyLib.Observables;
+
 
 namespace TestFuzzyLib
 {
-    public class Enemy : MarshalByRefObject, INotifyPropertyChanged
+
+    public class Enemy : DynamicPOCO
     {
         public double Health { get; set; }
 
@@ -22,15 +23,5 @@ namespace TestFuzzyLib
         public double Skill { get; set; }
 
         public double Desirability { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
     }
 }
