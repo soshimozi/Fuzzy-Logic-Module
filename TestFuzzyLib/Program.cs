@@ -15,7 +15,6 @@ namespace TestFuzzyLib
     {
         static void Main(string[] args)
         {
-
             var module = new FuzzyModule();
             var fo = new ObservableFuzzyObject<Enemy>(module);
 
@@ -50,8 +49,7 @@ namespace TestFuzzyLib
             mod.DefineVariable(p => p.Desirability);
             mod.DefineVariable(p => p.Skill);
 
-
-            mod.AddFuzzySet("Very_Skilled", (p) => p.Skill, CreateRightShoulderSet(20, 100, 80))
+            mod.AddFuzzySet("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
                 .AddFuzzySet("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
                 .AddFuzzySet("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
 

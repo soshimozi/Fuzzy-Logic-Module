@@ -4,6 +4,8 @@ using FuzzyLib.AOP;
 using FuzzyLib.Infrastructure;
 using FuzzyLib.Object.Generic;
 using FuzzyLib.Observables;
+using System.Linq;
+using System.Reflection;
 
 namespace FuzzyLib.Object
 {
@@ -22,7 +24,6 @@ namespace FuzzyLib.Object
                 var pi = VariableReferences[name].PropertyInfo;
                 Module.Fuzzify(pi.Name, DoubleSafeCaster.Convert(pi.GetValue(WrappedObject, null)));
             };
-
 
             DefineVariables();
         }
@@ -51,6 +52,15 @@ namespace FuzzyLib.Object
 
         private void DefineVariables()
         {
+            //var properties = typeof(T).GetMethods()
+            //    //.Where(y => y.GetCustomAttributes(false).OfType<ObservableAttribute>().Any())
+            //    .ToList();
+
+            //foreach(var property in properties)
+            //{
+            //    DefineVariable(property.Name);
+            //}
+
         }
     }
 }
