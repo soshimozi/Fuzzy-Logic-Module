@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FuzzyLib.Interfaces;
+using System;
 using System.Linq;
 
 namespace FuzzyLib.Statement

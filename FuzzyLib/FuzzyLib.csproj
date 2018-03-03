@@ -43,9 +43,8 @@
   <ItemGroup>
     <Compile Include="AOP\DynamicProxy.cs" />
     <Compile Include="AOP\IDynamicProxy.cs" />
-    <Compile Include="IAutoNotifyPropertyChanged.cs" />
-    <Compile Include="IFuzzySet.cs" />
-    <Compile Include="IFuzzyTerm.cs" />
+    <Compile Include="Interfaces\IFuzzySet.cs" />
+    <Compile Include="Interfaces\IFuzzyTerm.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />
     <Compile Include="IntegerExtensions.cs" />

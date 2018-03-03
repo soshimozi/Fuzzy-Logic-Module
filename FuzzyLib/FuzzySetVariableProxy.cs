@@ -1,4 +1,5 @@
-﻿using FuzzyLib.Sets;
+﻿using FuzzyLib.Interfaces;
+using FuzzyLib.Sets;
 
 namespace FuzzyLib
 {

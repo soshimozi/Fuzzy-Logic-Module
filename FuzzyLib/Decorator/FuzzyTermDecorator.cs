@@ -1,4 +1,5 @@
-﻿using FuzzyLib.Operators;
+﻿using FuzzyLib.Interfaces;
+using FuzzyLib.Operators;
 
 namespace FuzzyLib.Decorator
 {

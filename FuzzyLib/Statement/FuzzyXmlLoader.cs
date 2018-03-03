@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using FuzzyLib.Interfaces;
 using FuzzyLib.Object;
 using FuzzyLib.Object.Generic;
 using FuzzyLib.Sets;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using FuzzyLib.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FuzzyLib.Operators

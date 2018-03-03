@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FuzzyLib.Decorator;
 using FuzzyLib.Infrastructure;
+using FuzzyLib.Interfaces;
 
 namespace FuzzyLib.Object
 {

@@ -1,4 +1,6 @@
-﻿namespace FuzzyLib
+﻿using FuzzyLib.Interfaces;
+
+namespace FuzzyLib
 {
     public class FuzzyRule
     {

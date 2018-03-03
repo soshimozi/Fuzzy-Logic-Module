@@ -1,4 +1,6 @@
-﻿namespace FuzzyLib.Sets
+﻿using FuzzyLib.Interfaces;
+
+namespace FuzzyLib.Sets
 {
     public class SingletonFuzzySet : IFuzzySet
     {

@@ -1,4 +1,6 @@
-﻿namespace FuzzyLib.Operators
+﻿using FuzzyLib.Interfaces;
+
+namespace FuzzyLib.Operators
 {
     public static class FuzzyOperator
     {

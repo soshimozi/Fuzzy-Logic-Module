@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using FuzzyLib;
+using FuzzyLib.Interfaces;
 using FuzzyLib.Object;
 using FuzzyLib.Observables;
 using FuzzyLib.Operators;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FuzzyLib.Decorator;
+using FuzzyLib.Interfaces;
 using FuzzyLib.Operators;
 
 namespace FuzzyLib
