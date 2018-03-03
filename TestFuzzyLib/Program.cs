@@ -1,139 +1,146 @@
-﻿using System.Dynamic;
-using System.Text;
+﻿using System;
+using System.IO;
+using System.Xml;
 using FuzzyLib;
-using System.ComponentModel;
+using FuzzyLib.Interfaces;
+using FuzzyLib.Object;
+using FuzzyLib.Observables;
+using FuzzyLib.Operators;
+using FuzzyLib.Sets;
+using Parser;
 
 namespace TestFuzzyLib
 {
     class Program
     {
-        static FuzzyModule m_FuzzyModule = new FuzzyModule();
         static void Main(string[] args)
         {
-            //FuzzyModule fm = new FuzzyModule();
+            var module = new FuzzyModule();
+            var fo = new ObservableFuzzyObject<Enemy>(module);
 
-            //FuzzyVariable DistToTarget = m_FuzzyModule.CreateFLV("DistToTarget");
-            //FuzzySetProxy Target_Close = DistToTarget.AddFuzzySet("Target_Close", FuzzySet.CreateLeftShoulderSet(0, 25, 150));
-            //FuzzySetProxy Target_Medium = DistToTarget.AddFuzzySet("Target_Medium", FuzzySet.CreateTriangularSet(25, 150, 300));
-            //FuzzySetProxy Target_Far = DistToTarget.AddFuzzySet( "Target_Far", FuzzySet.CreateRightShoulderSet(150, 300, 1000));
+            var map = new CharCodeMap();
+            map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
 
-            //FuzzyVariable Desirability = m_FuzzyModule.CreateFLV("Desirability");
-            //FuzzySetProxy Undesirable = Desirability.AddFuzzySet("Undesirable", FuzzySet.CreateLeftShoulderSet(0, 25, 50));
-            //FuzzySetProxy Desirable = Desirability.AddFuzzySet("Desirable", FuzzySet.CreateTriangularSet(25, 50, 75));
-            //FuzzySetProxy VeryDesirable = Desirability.AddFuzzySet("VeryDesirable", FuzzySet.CreateRightShoulderSet(50, 75, 100));
+            var parser = new FuzzyLogicXMLParser(module, map);
 
-            //FuzzyVariable AmmoStatus = m_FuzzyModule.CreateFLV("AmmoStatus");
-            //FuzzySetProxy Ammo_Loads = AmmoStatus.AddFuzzySet("Ammo_Loads", FuzzySet.CreateRightShoulderSet(10, 30, 100));
-            //FuzzySetProxy Ammo_Okay = AmmoStatus.AddFuzzySet("Ammo_Okay", FuzzySet.CreateTriangularSet(0, 10, 30));
-            //FuzzySetProxy Ammo_Low = AmmoStatus.AddFuzzySet("Ammo_Low", FuzzySet.CreateTriangularSet(0, 0, 10));
+            var xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(GetResourceTextFile("foo.xml"));
 
-            //m_FuzzyModule.AddRule(new FuzzyOperatorOR(new FuzzyOperatorAND(Target_Close, Ammo_Low), new FuzzyOperatorOR(new FuzzyOperatorAND(Target_Close, Ammo_Loads), new FuzzyOperatorAND(Target_Close, Ammo_Okay))), Undesirable);
-            ////m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Close, Ammo_Okay), Undesirable);
-            ////m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Close, Ammo_Low), Undesirable);
+            var xmlLoader = new FuzzyLogicXMLLoader<Enemy>(xmlDocument, parser, fo);
 
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Medium, Ammo_Loads), VeryDesirable);
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Medium, Ammo_Okay), VeryDesirable);
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Medium, Ammo_Low), Desirable);
+            // set some variables
+            var enemyProxy = fo.Proxy;
+            enemyProxy.DistanceToTarget = 12;
+            enemyProxy.AmmoStatus = 12;
+            fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv() );
+            Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Far, Ammo_Loads), Desirable);
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Far, Ammo_Okay), Undesirable);
-            //m_FuzzyModule.AddRule(new FuzzyOperatorAND(Target_Far, Ammo_Low), Undesirable);
-
-            //Console.Write("Enter distance: ");
-            //string distanceString = Console.ReadLine();
-
-            //double distance = 0;
-            //double.TryParse(distanceString, out distance);
-
-            //Console.Write("Enter rounds: ");
-            //string roundsString = Console.ReadLine();
-
-            //int numRoundsLeft = 0;
-            //int.TryParse(roundsString, out numRoundsLeft);
-
-            ////fuzzify distance and amount of ammo
-            //m_FuzzyModule.Fuzzify("DistToTarget", distance);
-            //m_FuzzyModule.Fuzzify("AmmoStatus", (double)numRoundsLeft);
-            //double desirabilityScore = m_FuzzyModule.DeFuzzify("Desirability", DefuzzifyMethod.MAX_AV);
-
-            //Console.WriteLine("Desirability Score: {0}", desirabilityScore);
-            //Console.ReadLine();
-
-            var enemy = new Enemy();
-            var mod = new FuzzyObject<Enemy>(enemy);
+            enemyProxy.DistanceToTarget = 175;
+            enemyProxy.AmmoStatus = 43;
+            fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
 
-            var distanceVariable = mod.DefineVariable(p => p.DistanceToTarget);
-            var statusVariable = mod.DefineVariable(p => p.AmmoStatus);
-            var desireability = mod.DefineVariable(p => p.Desireability);
+            var mod = new ObservableFuzzyObject<Enemy>(new FuzzyModule());
 
-            mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, FuzzySet.CreateRightShoulderSet, 10, 20, 100)
-                .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 10, 30)
-                .AddFuzzySet("Ammo_Low", p => p.AmmoStatus, FuzzySet.CreateTriangularSet, 0, 0, 10);
+            // TODO: use reflection to call DefineVariable based on type and decorated properties
+            mod.DefineVariable(p => p.DistanceToTarget);
+            mod.DefineVariable(p => p.AmmoStatus);
+            mod.DefineVariable(p => p.Desirability);
+            mod.DefineVariable(p => p.Skill);
 
-            mod.AddFuzzySet("Undesirable", p => p.Desireability, FuzzySet.CreateLeftShoulderSet, 0, 25, 50)
-                .AddFuzzySet("Desirable", p => p.Desireability, FuzzySet.CreateTriangularSet, 25, 50, 75)
-                .AddFuzzySet("VeryDesirable", p => p.Desireability, FuzzySet.CreateRightShoulderSet, 50, 75, 100);
+            mod.DefineFuzzyTerm("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
+                .DefineFuzzyTerm("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
+                .DefineFuzzyTerm("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
 
-            mod.AddFuzzySet("Target_Close", p => p.DistanceToTarget, FuzzySet.CreateLeftShoulderSet, 0, 25, 150)
-            .AddFuzzySet("Target_Medium", p => p.DistanceToTarget, FuzzySet.CreateTriangularSet, 25, 150, 300)
-            .AddFuzzySet( "Target_Far", p => p.DistanceToTarget, FuzzySet.CreateRightShoulderSet, 150, 300, 1000);
+            mod.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
+                .DefineFuzzyTerm("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
+                .DefineFuzzyTerm("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
 
-            //FuzzyVariable Desirability = m_FuzzyModule.CreateFLV("Desirability");
-            //FuzzySetProxy Undesirable = Desirability.AddFuzzySet("Undesirable", FuzzySet.CreateLeftShoulderSet(0, 25, 50));
-            //FuzzySetProxy Desirable = Desirability.AddFuzzySet("Desirable", FuzzySet.CreateTriangularSet(25, 50, 75));
-            //FuzzySetProxy VeryDesirable = Desirability.AddFuzzySet("VeryDesirable", FuzzySet.CreateRightShoulderSet(50, 75, 100));
+            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
+                .DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
+                .DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
 
-            //dynamic modwrapper = mod;
+            mod.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
+                .DefineFuzzyTerm("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
+                .DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
+
+            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
+            mod.DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
+            mod.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
 
             dynamic modwrapper = mod.GetDynamic();
-
-            //mod.WrapSet("Ammo_Loads").And(mod["Ammo_Okay"]);
-            //.Or(mod.And(mod["DistanceOkay"], mod["Ammo_Low"])
             mod.AddRule(
-                mod.WrapSet(modwrapper.Ammo_Loads)
-                .Or(mod["Ammo_Okay"])
-                .And(mod["Target_Medium"])
-                , /* antecedent - If */ 
-                mod.WrapSet("Desirable") /* consequence - then */
-            );
-
-            //FuzzySetProxy Ammo_Okay = AmmoStatus.AddFuzzySet("Ammo_Okay", FuzzySet.CreateTriangularSet(0, 10, 30));
-            //FuzzySetProxy Ammo_Low = AmmoStatus.AddFuzzySet("Ammo_Low", FuzzySet.CreateTriangularSet(0, 0, 10));
+                FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Low),
+                       FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
+                       FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
+                ),
+                modwrapper.Undesirable);
 
 
-            var ammoLoads = distanceVariable.AddFuzzySet("dont", FuzzySet.CreateTriangularSet(0, 50, 4000));
-            var desirable = desireability.AddFuzzySet("dont", FuzzySet.CreateTriangularSet(0, 50, 4000));
+            mod.AddRule(
+                FuzzyOperator.And(mod["Target_Medium"], mod["Ammo_Low"]),
+                mod["Undesirable"]);
 
-            enemy.DistanceToTarget = 45;
-            enemy.AmmoStatus = 5;
-            enemy.Desireability = 23;
 
-            // fuzzify some variables to be used
-            //mod.Fuzzify(p => p.DistanceToTarget);
-            //mod.Fuzzify(p => p.AmmoStatus);
+            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod.WrapSet("Desirable"));
+            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Okay"]), mod["VeryDesirable"]);
+            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Low"]), mod["Desirable"]);
 
-            mod.Compile(
-                p => p.DistanceToTarget,
-                p => p.AmmoStatus);
+            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Loads"]), mod["Desirable"]);
+            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Okay"]), mod["Undesirable"]);
+            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Low"]), mod["Undesirable"]);
 
+            var enemy = mod.Proxy;
+            enemy.DistanceToTarget = 12;
+            enemy.AmmoStatus = 12;
 
             // get result
-            mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyCentroid(15));
-            //mod.DeFuzzify(p => p.Desireability, m => m.DeFuzzifyMaxAv());
+            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("First result: {0}", enemy.Desirability);
 
-            //mod.Module.AddRule(new FuzzyOperatorAND(targetFar, ammoLoads), desirable);
-            //mod.DeFuzzify(p => p.Desireability, DefuzzifyMethod.CENTROID);
+            enemy.DistanceToTarget = 175;
+            enemy.AmmoStatus = 43;
+
+            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("Second result: {0}", enemy.Desirability);
+
+            Console.ReadKey(true);
         }
-    }
 
-    class Enemy
-    {
-        public double Health { get; set; }
-        public int Age { get; set; }
-        public double Hunger { get; set; }
-        public double DistanceToTarget { get; set; }
-        public int AmmoStatus { get; set; }
-        public double Desireability { get; set; }
+
+        private static string GetResourceTextFile(string filename)
+        {
+            using (var stream = typeof(Program).Assembly.
+                       GetManifestResourceStream("TestFuzzyLib." + filename))
+            {
+                if (stream == null) return string.Empty;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
+        }
+
+        public static IFuzzySet CreateTriangularSet(double min, double peak, double max)
+        {
+            return new TriangleFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateLeftShoulderSet(double min, double peak, double max)
+        {
+            return new LeftShoulderFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateRightShoulderSet(double min, double peak, double max)
+        {
+            return new RightShoulderFuzzySet(min, max, peak);
+        }
+
+        public static IFuzzySet CreateSingletonShoulderSet(double min, double peak, double max)
+        {
+            return new SingletonFuzzySet(min, max, peak);
+        }
     }
 }

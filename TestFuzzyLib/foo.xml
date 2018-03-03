@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
+  <FuzzyVariables>
+    <FuzzyVariable name="DistanceToTarget">
+      <Terms>
+        <Term name="Target_Close">
+          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="25" />
+              <add name="max" value="150" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Target_Medium">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="15" />
+              <add name="peak" value="150" />
+              <add name="max" value="300" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Target_Far">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="150" />
+              <add name="peak" value="300" />
+              <add name="max" value="1000" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+    <FuzzyVariable name="Desirability">
+      <Terms>
+        <Term name="Undesirable">
+          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="25" />
+              <add name="max" value="50" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Desirable">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="25" />
+              <add name="peak" value="50" />
+              <add name="max" value="75" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="VeryDesirable">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="50" />
+              <add name="peak" value="75" />
+              <add name="max" value="100" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+    <FuzzyVariable name="AmmoStatus">
+      <Terms>
+        <Term name="Ammo_Low">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="0" />
+              <add name="max" value="10" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Ammo_Okay">
+          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="0" />
+              <add name="peak" value="10" />
+              <add name="max" value="30" />
+            </parameters>
+          </Shape>
+        </Term>
+        <Term name="Ammo_Loads">
+          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+            <parameters>
+              <add name="min" value="10" />
+              <add name="peak" value="30" />
+              <add name="max" value="100" />
+            </parameters>
+          </Shape>
+        </Term>
+      </Terms>
+    </FuzzyVariable>
+  </FuzzyVariables>
+  <FuzzyRules>
+    <Rule>
+      <![CDATA[
+      IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) 
+            OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) 
+            OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Okay) 
+      THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Low THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Okay THEN Desirability:Undesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Far AND AmmoStatus:Ammo_Loads THEN Desirability:Desirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Low THEN Desirability:Desirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Okay THEN Desirability:VeryDesirable
+      ]]>
+    </Rule>
+    <Rule>
+      <![CDATA[
+      IF DistanceToTarget:Target_Medium AND AmmoStatus:Ammo_Loads THEN Desirability:Desirable
+      ]]>
+    </Rule>
+  </FuzzyRules>
+</FuzzyModule>

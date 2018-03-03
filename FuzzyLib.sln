@@ -1,9 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyLib", "FuzzyLib\FuzzyLib.csproj", "{FBC799CC-0339-4B8E-AD7D-ACADBAC23E39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFuzzyLib", "TestFuzzyLib\TestFuzzyLib.csproj", "{B7049B6F-B0D8-4A22-92F2-F4CEB8410462}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyLibUI", "FuzzyLibUI\FuzzyLibUI.csproj", "{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit", "ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj", "{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +43,43 @@ Global
 		{B7049B6F-B0D8-4A22-92F2-F4CEB8410462}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B7049B6F-B0D8-4A22-92F2-F4CEB8410462}.Release|x86.ActiveCfg = Release|x86
 		{B7049B6F-B0D8-4A22-92F2-F4CEB8410462}.Release|x86.Build.0 = Release|x86
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9EF23BE4-1E6A-4BCF-A2E0-454F4B2FA92C}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|x86.ActiveCfg = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{BAC2C4D5-0806-42B9-B3A8-CE463ABC46E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B348C449-B00E-4AAA-BA66-49F74BAC0839}
 	EndGlobalSection
 EndGlobal

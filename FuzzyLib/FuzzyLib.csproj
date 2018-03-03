@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,27 +41,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicWrapper.cs" />
-    <Compile Include="FairlyFuzzyOperator.cs" />
+    <Compile Include="AOP\DynamicProxy.cs" />
+    <Compile Include="AOP\IDynamicProxy.cs" />
+    <Compile Include="FuzzyTermProxy.cs" />
+    <Compile Include="Interfaces\IFuzzySet.cs" />
+    <Compile Include="Interfaces\IFuzzyTerm.cs" />
+    <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
+    <Compile Include="Infrastructure\DynamicWrapper.cs" />
+    <Compile Include="MathExtensions.cs" />
+    <Compile Include="Object\FuzzyObject.cs" />
+    <Compile Include="AOP\DynamicPOCO.cs" />
+    <Compile Include="Observables\ObservableAttribute.cs" />
+    <Compile Include="Observables\ObservableDynamicProxy.cs" />
+    <Compile Include="Operators\FairlyFuzzyOperator.cs" />
     <Compile Include="FuzzyModule.cs" />
-    <Compile Include="FuzzyObject.cs" />
-    <Compile Include="FuzzyOperator.cs" />
-    <Compile Include="FuzzyOperatorAND.cs" />
-    <Compile Include="FuzzyOperatorOR.cs" />
+    <Compile Include="Object\Generic\FuzzyObject.cs" />
+    <Compile Include="Operators\FuzzyOperator.cs" />
+    <Compile Include="Operators\FuzzyOperatorAND.cs" />
+    <Compile Include="Operators\FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
-    <Compile Include="FuzzySet.cs" />
-    <Compile Include="FuzzySetProxy.cs" />
-    <Compile Include="FuzzyTermWrapper.cs" />
-    <Compile Include="FuzzyVariableReference.cs" />
-    <Compile Include="LamdaExtensions.cs" />
-    <Compile Include="SingletonFuzzySet.cs" />
-    <Compile Include="FuzzyTerm.cs" />
+    <Compile Include="Operators\ImpliesOperator.cs" />
+    <Compile Include="Decorator\FuzzyTermDecorator.cs" />
+    <Compile Include="Object\FuzzyVariableReference.cs" />
+    <Compile Include="Infrastructure\LamdaExtensions.cs" />
+    <Compile Include="Object\ObservableFuzzyObject.cs" />
+    <Compile Include="Sets\SingletonFuzzySet.cs" />
     <Compile Include="FuzzyVariable.cs" />
-    <Compile Include="LeftShoulderFuzzySet.cs" />
+    <Compile Include="Sets\LeftShoulderFuzzySet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RightShoulderFuzzySet.cs" />
-    <Compile Include="TriangleFuzzySet.cs" />
-    <Compile Include="VeryFuzzyOperator.cs" />
+    <Compile Include="Sets\RightShoulderFuzzySet.cs" />
+    <Compile Include="Sets\TriangleFuzzySet.cs" />
+    <Compile Include="Operators\VeryFuzzyOperator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Variables\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FuzzyLib.Interfaces;
+using FuzzyLib.Sets;
 
 namespace FuzzyLib
 {
     public class FuzzyVariable
     {
-        private Dictionary<string, FuzzySet> _memberSets = new Dictionary<string,FuzzySet>();
+        private readonly Dictionary<string, IFuzzySet> _memberSets = new Dictionary<string, IFuzzySet>();
 
-        private double _minimumRange = 0;
-        private double _maximumRange = 0;
+        private double _minimumRange;
+        private double _maximumRange;
 
         //this method is called with the upper and lower bound of a set each time a
         //new set is added to adjust the upper and lower range values accordingly
@@ -20,26 +20,33 @@ namespace FuzzyLib
             _maximumRange = Math.Max(max, _maximumRange);
         }
 
-        public FuzzySetProxy AddFuzzySet(
+        public FuzzyTermProxy this[string name] => GetFuzzyTerm(name);
+
+        protected FuzzyTermProxy GetFuzzyTerm(string name)
+        {
+            return FuzzyTermProxy.CreateProxyForSet(_memberSets[name]);
+        }
+
+        public FuzzyTermProxy AddFuzzyTerm(
             string name, 
-            FuzzySet set)
+            IFuzzySet set)
         {
             _memberSets.Add(name, set);
             AdjustRangeToFit(set.MinBound, set.MaxBound);
-            return FuzzySetProxy.CreateProxyForSet(set);
+            return FuzzyTermProxy.CreateProxyForSet(set);
         }
 
         //fuzzify a value by calculating its DOM in each of this variable's subsets
         public void Fuzzify(double value)
         {
-            if (value < _minimumRange || value > _maximumRange)
-                throw new ArgumentOutOfRangeException("value");
+            //if (value < _minimumRange || value > _maximumRange)
+            //    throw new ArgumentOutOfRangeException("value");
 
 
             //for each set in the flv calculate the DOM for the given value
-            foreach (FuzzySet set in _memberSets.Values)
+            foreach (var set in _memberSets.Values)
             {
-                set.DegreeOfMembership = set.CalculateDegreeOfMovement(value);
+                set.DegreeOfMembership = set.CalculateDegreeOfMembership(value);
             }
         }
 
@@ -49,14 +56,14 @@ namespace FuzzyLib
             double bottom = 0.0;
             double top = 0.0;
 
-            foreach (FuzzySet set in _memberSets.Values)
+            foreach (var set in _memberSets.Values)
             {
                 bottom += set.DegreeOfMembership;
                 top += set.RepresentativeValue * set.DegreeOfMembership;
             }
 
             //make sure bottom is not equal to zero
-            if (bottom == 0) { return 0; }
+            if (Math.Abs(bottom) < double.Epsilon) { return 0; }
 
             return top / bottom;  
         }
@@ -65,7 +72,7 @@ namespace FuzzyLib
         public double DeFuzzifyCentroid(int numSamples)
         {
             //calculate the step size
-            double stepSize = (_maximumRange - _minimumRange) / (double)numSamples;
+            double stepSize = (_maximumRange - _minimumRange) / numSamples;
 
             double totalArea = 0.0;
             double sumOfMoments = 0.0;
@@ -85,20 +92,21 @@ namespace FuzzyLib
                 //for each set get the contribution to the area. This is the lower of the 
                 //value returned from CalculateDOM or the actual DOM of the fuzzified 
                 //value itself   
-                foreach (FuzzySet set in _memberSets.Values)
+                foreach (var set in _memberSets.Values)
                 {
                     double contribution
-                        = Math.Min(set.CalculateDegreeOfMovement(_minimumRange + (double)samp * stepSize), set.DegreeOfMembership);
+                        = Math.Min(set.CalculateDegreeOfMembership(_minimumRange + samp * stepSize), set.DegreeOfMembership);
 
                     totalArea += contribution;
-                    sumOfMoments += (_minimumRange + (double)samp * stepSize) * contribution;
+                    sumOfMoments += (_minimumRange + samp * stepSize) * contribution;
                 }
             }
 
             //make sure total area is not equal to zero
-            if (totalArea == 0) { return 0; }
+            if (Math.Abs(totalArea) < double.Epsilon) { return 0; }
 
             return (sumOfMoments / totalArea);
         }
     }
+
 }
