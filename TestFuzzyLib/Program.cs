@@ -49,25 +49,25 @@ namespace TestFuzzyLib
             mod.DefineVariable(p => p.Desirability);
             mod.DefineVariable(p => p.Skill);
 
-            mod.AddFuzzySet("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
-                .AddFuzzySet("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
-                .AddFuzzySet("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
+            mod.DefineFuzzyTerm("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
+                .DefineFuzzyTerm("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
+                .DefineFuzzyTerm("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
 
-            mod.AddFuzzySet("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
-                .AddFuzzySet("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
-                .AddFuzzySet("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
+            mod.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
+                .DefineFuzzyTerm("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
+                .DefineFuzzyTerm("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
 
-            mod.AddFuzzySet("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
-                .AddFuzzySet("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
-                .AddFuzzySet("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
+            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
+                .DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
+                .DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
 
-            mod.AddFuzzySet("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
-                .AddFuzzySet("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
-                .AddFuzzySet("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
+            mod.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
+                .DefineFuzzyTerm("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
+                .DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
 
-            mod.AddFuzzySet("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
-            mod.AddFuzzySet("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
-            mod.AddFuzzySet("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
+            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
+            mod.DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
+            mod.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
 
             dynamic modwrapper = mod.GetDynamic();
             mod.AddRule(
@@ -76,6 +76,12 @@ namespace TestFuzzyLib
                        FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
                 ),
                 modwrapper.Undesirable);
+
+
+            mod.AddRule(
+                FuzzyOperator.And(mod["Target_Medium"], mod["Ammo_Low"]),
+                mod["Undesirable"]);
+
 
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod.WrapSet("Desirable"));
             mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Okay"]), mod["VeryDesirable"]);

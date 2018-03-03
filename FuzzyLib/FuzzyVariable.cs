@@ -20,18 +20,20 @@ namespace FuzzyLib
             _maximumRange = Math.Max(max, _maximumRange);
         }
 
-        public FuzzySetTermProxy GetFuzzySet(string name)
+        public FuzzyTermProxy this[string name] => GetFuzzyTerm(name);
+
+        protected FuzzyTermProxy GetFuzzyTerm(string name)
         {
-            return FuzzySetTermProxy.CreateProxyForSet(_memberSets[name]);
+            return FuzzyTermProxy.CreateProxyForSet(_memberSets[name]);
         }
 
-        public FuzzySetTermProxy AddFuzzySet(
+        public FuzzyTermProxy AddFuzzyTerm(
             string name, 
             IFuzzySet set)
         {
             _memberSets.Add(name, set);
             AdjustRangeToFit(set.MinBound, set.MaxBound);
-            return FuzzySetTermProxy.CreateProxyForSet(set);
+            return FuzzyTermProxy.CreateProxyForSet(set);
         }
 
         //fuzzify a value by calculating its DOM in each of this variable's subsets
@@ -106,4 +108,5 @@ namespace FuzzyLib
             return (sumOfMoments / totalArea);
         }
     }
+
 }

@@ -11,7 +11,7 @@ namespace FuzzyLib
     {
         //when calculating the centroid of the fuzzy manifold this value is used
         //to determine how many cross-sections should be sampled
-        public const int NumSamples = 15;
+        public const int NumSamples = 25;
 
         private readonly Dictionary<string, FuzzyVariable> _variables
             = new Dictionary<string, FuzzyVariable>();
@@ -65,6 +65,11 @@ namespace FuzzyLib
             return gen.Invoke(_variables[key]);
         }
 
+        public FuzzyVariable this[string name]
+        {
+            get { return _variables[name]; }
+        }
+
         public static FuzzyTermDecorator<FuzzyOperatorAnd> And(IFuzzyTerm lhs, IFuzzyTerm rhs)
         {
             return new FuzzyTermDecorator<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
@@ -83,23 +88,6 @@ namespace FuzzyLib
         public static FuzzyTermDecorator<VeryFuzzyOperator> Very(IFuzzyTerm term)
         {
             return new FuzzyTermDecorator<VeryFuzzyOperator>(FuzzyOperator.Very(term));
-        }
-
-        public FuzzyVariable this[string name]
-        {
-            get { return _variables[name]; }
-        }
-
-        public IFuzzyTerm GetFuzzySet(string setName)
-        {
-            var parts = setName.Split(':');
-            if (parts.Length == 2)
-            {
-                var variable = this[parts[0]];
-                return variable.GetFuzzySet(parts[1]);
-            }
-
-            return null;
         }
     }
 

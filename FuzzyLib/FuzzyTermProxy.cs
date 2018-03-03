@@ -3,17 +3,17 @@ using FuzzyLib.Sets;
 
 namespace FuzzyLib
 {
-    public class FuzzySetTermProxy : IFuzzyTerm
+    public class FuzzyTermProxy : IFuzzyTerm
     {
         private readonly IFuzzySet _set;
-        private FuzzySetTermProxy(IFuzzySet set)
+        private FuzzyTermProxy(IFuzzySet set)
         {
             _set = set;
         }
 
-        public static FuzzySetTermProxy CreateProxyForSet(IFuzzySet set)
+        public static FuzzyTermProxy CreateProxyForSet(IFuzzySet set)
         {
-            return new FuzzySetTermProxy(set);
+            return new FuzzyTermProxy(set);
         }
 
         public IFuzzySet Set { get { return _set; } }
@@ -35,7 +35,7 @@ namespace FuzzyLib
 
         public override object Clone()
         {
-            return new FuzzySetTermProxy(_set);
+            return new FuzzyTermProxy(_set);
         }
     }
 }

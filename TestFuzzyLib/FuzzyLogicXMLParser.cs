@@ -120,10 +120,22 @@ namespace TestFuzzyLib
 
             GetToken();
 
-            var returnTerm = _module.GetFuzzySet(setName);
+            var returnTerm = GetFuzzyTerm(setName);
             if (returnTerm == null) throw new Exception("Invalid variable scope or name.");
 
             return returnTerm;
+        }
+
+        private IFuzzyTerm GetFuzzyTerm(string setName)
+        {
+            var parts = setName.Split(':');
+            if (parts.Length == 2)
+            {
+                var variable = _module[parts[0]];
+                return variable[parts[1]];
+            }
+
+            return null;
         }
 
     }

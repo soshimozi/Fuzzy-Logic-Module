@@ -119,7 +119,7 @@ namespace TestFuzzyLib
             if (shapeType == null) return;
 
             var shape = MakeShape(shapeNode, shapeType);
-            _objectToRead.AddFuzzySetByName(setName, variable, shape);
+            _objectToRead.DefineFuzzyTermByName(setName, variable, shape);
         }
 
         private static IFuzzySet MakeShape(XmlNode shapeNode, Type shapeType)

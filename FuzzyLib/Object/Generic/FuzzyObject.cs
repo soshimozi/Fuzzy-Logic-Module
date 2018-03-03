@@ -16,7 +16,7 @@ namespace FuzzyLib.Object.Generic
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
 
-        protected readonly Dictionary<string, FuzzySetTermProxy> FuzzySets = new Dictionary<string, FuzzySetTermProxy>();
+        protected readonly Dictionary<string, FuzzyTermProxy> FuzzySets = new Dictionary<string, FuzzyTermProxy>();
 
         public FuzzyObject(T obj, FuzzyModule module)
         {
@@ -41,9 +41,9 @@ namespace FuzzyLib.Object.Generic
             return this;
         }
 
-        public FuzzyTermDecorator<FuzzySetTermProxy> WrapSet(string name)
+        public FuzzyTermDecorator<FuzzyTermProxy> WrapSet(string name)
         {
-            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzySetTermProxy>(FuzzySets[name]) : null;
+            return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzyTermProxy>(FuzzySets[name]) : null;
         }
 
 
@@ -59,31 +59,31 @@ namespace FuzzyLib.Object.Generic
         //    return this;
         //}
 
-        public FuzzyObject<T> AddFuzzySet<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySet set)
+        public FuzzyObject<T> DefineFuzzyTerm<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySet set)
         {
             var pi = expr.GetPropertyInfo();
             if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
             {
-                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzySet(name, set));
+                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzyTerm(name, set));
             }
 
             return this;
         }
 
-        public void AddFuzzySetByName(string setName, string variableName, IFuzzySet set)
+        public void DefineFuzzyTermByName(string setName, string variableName, IFuzzySet set)
         {
             if (VariableReferences.ContainsKey(variableName))
             {
-                VariableReferences[variableName].Variable.AddFuzzySet(setName, set);
+                VariableReferences[variableName].Variable.AddFuzzyTerm(setName, set);
             }
         }
 
-        public FuzzySetTermProxy this[string name]
+        public FuzzyTermProxy this[string name]
         {
             get { return FuzzyTerm(name); }
         }
 
-        public FuzzySetTermProxy FuzzyTerm(string name)
+        public FuzzyTermProxy FuzzyTerm(string name)
         {
             return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
         }
@@ -154,7 +154,7 @@ namespace FuzzyLib.Object.Generic
 
         public dynamic GetDynamic()
         {
-            return new DynamicWrapper<FuzzySetTermProxy>(FuzzySets);
+            return new DynamicWrapper<FuzzyTermProxy>(FuzzySets);
         }
 
         #region Compile Overrides

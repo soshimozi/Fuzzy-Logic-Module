@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AOP\DynamicProxy.cs" />
     <Compile Include="AOP\IDynamicProxy.cs" />
+    <Compile Include="FuzzyTermProxy.cs" />
     <Compile Include="Interfaces\IFuzzySet.cs" />
     <Compile Include="Interfaces\IFuzzyTerm.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="Operators\FuzzyOperatorOR.cs" />
     <Compile Include="FuzzyRule.cs" />
     <Compile Include="Operators\ImpliesOperator.cs" />
-    <Compile Include="FuzzySetVariableProxy.cs" />
     <Compile Include="Decorator\FuzzyTermDecorator.cs" />
     <Compile Include="Object\FuzzyVariableReference.cs" />
     <Compile Include="Infrastructure\LamdaExtensions.cs" />
