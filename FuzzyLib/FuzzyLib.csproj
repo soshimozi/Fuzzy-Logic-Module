@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,12 +43,14 @@
   <ItemGroup>
     <Compile Include="AOP\DynamicProxy.cs" />
     <Compile Include="AOP\IDynamicProxy.cs" />
+    <Compile Include="IAutoNotifyPropertyChanged.cs" />
     <Compile Include="IFuzzySet.cs" />
+    <Compile Include="IFuzzyTerm.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />
     <Compile Include="IntegerExtensions.cs" />
     <Compile Include="Object\FuzzyObject.cs" />
-    <Compile Include="AOP\BaseDynamicProxy.cs" />
+    <Compile Include="AOP\DynamicPOCO.cs" />
     <Compile Include="Observables\ObservableAttribute.cs" />
     <Compile Include="Observables\ObservableDynamicProxy.cs" />
     <Compile Include="Operators\FairlyFuzzyOperator.cs" />
@@ -79,7 +82,6 @@
     <Compile Include="Infrastructure\LamdaExtensions.cs" />
     <Compile Include="Object\ObservableFuzzyObject.cs" />
     <Compile Include="Sets\SingletonFuzzySet.cs" />
-    <Compile Include="FuzzyTerm.cs" />
     <Compile Include="FuzzyVariable.cs" />
     <Compile Include="Sets\LeftShoulderFuzzySet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

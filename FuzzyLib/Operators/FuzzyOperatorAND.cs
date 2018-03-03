@@ -3,16 +3,16 @@ using System.Linq;
 
 namespace FuzzyLib.Operators
 {
-    public class FuzzyOperatorAnd : FuzzyTerm
+    public class FuzzyOperatorAnd : IFuzzyTerm
     {
         //an instance of this class may AND together up to 4 terms
-        private readonly List<FuzzyTerm> _terms = new List<FuzzyTerm>();
+        private readonly List<IFuzzyTerm> _terms = new List<IFuzzyTerm>();
 
-        public FuzzyOperatorAnd(params FuzzyTerm[] terms)
+        public FuzzyOperatorAnd(params IFuzzyTerm[] terms)
         {
             foreach (var term in terms)
             {
-                _terms.Add(term.Clone() as FuzzyTerm);
+                _terms.Add(term.Clone() as IFuzzyTerm);
             }
         }
 
@@ -43,7 +43,7 @@ namespace FuzzyLib.Operators
 
         public override object Clone()
         {
-            return new FuzzyOperatorAnd(_terms.Select(term => term.Clone() as FuzzyTerm).ToArray());
+            return new FuzzyOperatorAnd(_terms.Select(term => term.Clone() as IFuzzyTerm).ToArray());
         }
     }
 }

@@ -38,7 +38,7 @@ namespace FuzzyLib.Statement
             _token = _tokenType.Code;
         }
 
-        public Tuple<FuzzyTerm, FuzzyTerm> ParseStatement(string statement)
+        public Tuple<IFuzzyTerm, IFuzzyTerm> ParseStatement(string statement)
         {
             var textbuffer =
                 new TextBuffer(statement);
@@ -59,16 +59,16 @@ namespace FuzzyLib.Statement
             GetToken();
             var consequence = ParseExpression();
 
-            return new Tuple<FuzzyTerm, FuzzyTerm>(antecedent, consequence);
+            return new Tuple<IFuzzyTerm, IFuzzyTerm>(antecedent, consequence);
         }
 
-        private FuzzyTerm ParseExpression()
+        private IFuzzyTerm ParseExpression()
         {
             var resultTerm = ParseSimpleExpression();
             return resultTerm;
         }
 
-        private FuzzyTerm ParseSimpleExpression()
+        private IFuzzyTerm ParseSimpleExpression()
         {
             var resultTerm = ParseTerm();
 
@@ -87,7 +87,7 @@ namespace FuzzyLib.Statement
             return resultTerm;
         }
 
-        private FuzzyTerm ParseTerm()
+        private IFuzzyTerm ParseTerm()
         {
             var resultTerm = ParseFactor();
 
@@ -106,9 +106,9 @@ namespace FuzzyLib.Statement
             return resultTerm;
         }
 
-        private FuzzyTerm ParseFactor()
+        private IFuzzyTerm ParseFactor()
         {
-            FuzzyTerm resultTerm;
+            IFuzzyTerm resultTerm;
 
             switch (_token)
             {
@@ -143,7 +143,7 @@ namespace FuzzyLib.Statement
             return resultTerm;
         }
 
-        private FuzzyTerm ParseVariable()
+        private IFuzzyTerm ParseVariable()
         {
             var setName = _tokenType.TokenString;
 

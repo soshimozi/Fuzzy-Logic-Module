@@ -3,16 +3,16 @@
     public class FuzzyRule
     {
         //antecedent (usually a composite of several fuzzy sets and operators)
-        private readonly FuzzyTerm _antecedent;
+        private readonly IFuzzyTerm _antecedent;
 
         //consequence (usually a single fuzzy set, but can be several ANDed together)
-        private readonly FuzzyTerm _consequence;
+        private readonly IFuzzyTerm _consequence;
 
-        public FuzzyRule(FuzzyTerm antecedent,
-                        FuzzyTerm consequence)
+        public FuzzyRule(IFuzzyTerm antecedent,
+                        IFuzzyTerm consequence)
         {
-            _antecedent = antecedent.Clone() as FuzzyTerm;
-            _consequence = consequence.Clone() as FuzzyTerm;
+            _antecedent = antecedent.Clone() as IFuzzyTerm;
+            _consequence = consequence.Clone() as IFuzzyTerm;
         }
 
         public void SetConfidenceOfConsequentToZero()

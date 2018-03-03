@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FuzzyLib.Operators
 {
-    public class ImpliesOperator : FuzzyTerm
+    public class ImpliesOperator : IFuzzyTerm
     {
         public override double DegreeOfMembership
         {

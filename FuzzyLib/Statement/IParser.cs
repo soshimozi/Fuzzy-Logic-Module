@@ -4,6 +4,6 @@ namespace FuzzyLib.Statement
 {
     public interface IParser
     {
-        Tuple<FuzzyTerm, FuzzyTerm> ParseStatement(string statement);
+        Tuple<IFuzzyTerm, IFuzzyTerm> ParseStatement(string statement);
     }
 }

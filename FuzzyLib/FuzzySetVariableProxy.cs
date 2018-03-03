@@ -2,7 +2,7 @@
 
 namespace FuzzyLib
 {
-    public class FuzzySetTermProxy : FuzzyTerm
+    public class FuzzySetTermProxy : IFuzzyTerm
     {
         private readonly IFuzzySet _set;
         private FuzzySetTermProxy(IFuzzySet set)

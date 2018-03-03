@@ -14,35 +14,29 @@ namespace TestFuzzyLib
         static void Main(string[] args)
         {
 
+            var module = new FuzzyModule();
+            var fo = new ObservableFuzzyObject<Enemy>(module);
+
             var map = new CharCodeMap();
             map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
 
-            var module = new FuzzyModule();
             var parser = new StatementParser(module, map);
-
-            var enemy2 = ObservableDynamicProxy<Enemy>.Marshal(new Enemy(), false);
-            var fo = new ObservableFuzzyObject<Enemy>(enemy2, module);
             var xmlLoader = new FuzzyXmlLoader<Enemy>(parser, fo);
-            
             xmlLoader.LoadXml(GetResourceTextFile("foo.xml"));
 
-            enemy2.DistanceToTarget = 12;
-            enemy2.AmmoStatus = 12;
-
-            // this should be one of the variables specified
-            // otherwise an error could result
+            // set some variables
+            var enemyProxy = fo.Proxy;
+            enemyProxy.DistanceToTarget = 12;
+            enemyProxy.AmmoStatus = 12;
             fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv() );
-            Console.WriteLine("Desirability: {0}", enemy2.Desirability);
+            Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
-            enemy2.DistanceToTarget = 175;
-            enemy2.AmmoStatus = 43;
+            enemyProxy.DistanceToTarget = 175;
+            enemyProxy.AmmoStatus = 43;
             fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv());
+            Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
-            Console.WriteLine("Desirability: {0}", enemy2.Desirability);
-
-            var enemy = ObservableDynamicProxy<Enemy>.Marshal(new Enemy(), false);
-            var fuzzyModule = new FuzzyModule();
-            var mod = new ObservableFuzzyObject<Enemy>(enemy, fuzzyModule);
+            var mod = new ObservableFuzzyObject<Enemy>(new FuzzyModule());
 
             mod.DefineVariable(p => p.DistanceToTarget);
             mod.DefineVariable(p => p.AmmoStatus);
@@ -86,6 +80,7 @@ namespace TestFuzzyLib
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Okay"]), mod["Undesirable"]);
             mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Low"]), mod["Undesirable"]);
 
+            var enemy = mod.Proxy;
             enemy.DistanceToTarget = 12;
             enemy.AmmoStatus = 12;
 

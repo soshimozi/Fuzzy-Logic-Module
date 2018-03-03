@@ -2,7 +2,7 @@
 
 namespace FuzzyLib
 {
-    public abstract class FuzzyTerm : ICloneable
+    public abstract class IFuzzyTerm : ICloneable
     {
         //retrieves the degree of membership of the term
         public abstract double DegreeOfMembership

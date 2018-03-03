@@ -11,7 +11,7 @@ namespace FuzzyLib.Object.Generic
     public class FuzzyObject<T>
     {
         protected readonly FuzzyModule Module;
-        protected readonly T WrappedObject;
+        public T WrappedObject { get; set; }
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
 
@@ -23,13 +23,18 @@ namespace FuzzyLib.Object.Generic
             Module = module;
         }
 
-        public FuzzyObject<T> AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        public FuzzyObject(FuzzyModule module)
+        {
+            Module = module;
+        }
+
+        public FuzzyObject<T> AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             Module.AddRule(antecedent, consequence);
             return this;
         }
 
-        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
+        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
         {
             Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
             return this;

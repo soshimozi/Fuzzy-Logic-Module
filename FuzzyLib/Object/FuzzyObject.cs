@@ -27,13 +27,13 @@ namespace FuzzyLib.Object
             ObjectType = obj.GetType();
         }
 
-        public FuzzyObject AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        public FuzzyObject AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             Module.AddRule(antecedent, consequence);
             return this;
         }
 
-        public FuzzyObject AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : FuzzyTerm where TConsequence : FuzzyTerm
+        public FuzzyObject AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
         {
             Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
             return this;

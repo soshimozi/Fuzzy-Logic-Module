@@ -43,13 +43,13 @@ namespace FuzzyLib.Statement
             return set;
         }
 
-        public FuzzyTerm GetFuzzySet(string name, string variable)
+        public IFuzzyTerm GetFuzzySet(string name, string variable)
         {
             var fullname = string.Format("{0}:{1}", variable, name);
             return FuzzySets.ContainsKey(fullname) ? FuzzySets[fullname] : null;
         }
 
-        public FuzzyRule AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        public FuzzyRule AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             return Module.AddRule(antecedent, consequence);
         }

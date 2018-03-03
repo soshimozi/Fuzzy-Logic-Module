@@ -1,14 +1,19 @@
+using System;
 using System.ComponentModel;
+using FuzzyLib.AOP;
 using FuzzyLib.Infrastructure;
 using FuzzyLib.Object.Generic;
+using FuzzyLib.Observables;
 
 namespace FuzzyLib.Object
 {
-    public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : INotifyPropertyChanged
+    public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : MarshalByRefObject, INotifyPropertyChanged
     {
-        public ObservableFuzzyObject(T obj, FuzzyModule module) : base(obj, module)
+        public ObservableFuzzyObject(T proxy, FuzzyModule module) : base(proxy, module)
         {
-            (obj as INotifyPropertyChanged).PropertyChanged += (sender, args) =>
+            Proxy = proxy;
+
+            proxy.PropertyChanged += (sender, args) =>
             {
                 var name = args.PropertyName;
 
@@ -18,6 +23,33 @@ namespace FuzzyLib.Object
                 Module.Fuzzify(pi.Name, DoubleSafeCaster.Convert(pi.GetValue(WrappedObject, null)));
             };
 
+        }
+
+        public ObservableFuzzyObject(FuzzyModule module, params object []  creationArgs) : base(module)
+        {
+            WrappedObject = Proxy = ObservableDynamicProxy<T>.Create(creationArgs); ;
+            Proxy.PropertyChanged += (sender, args) =>
+            {
+                var name = args.PropertyName;
+
+                if (!VariableReferences.ContainsKey(name)) return;
+
+                var pi = VariableReferences[name].PropertyInfo;
+                Module.Fuzzify(pi.Name, DoubleSafeCaster.Convert(pi.GetValue(WrappedObject, null)));
+            };
+
+        }
+
+        public T Proxy
+        {
+            get;
+            private set;
+        }
+
+        public static ObservableFuzzyObject<T> WrapType(FuzzyModule module, params object[] args)
+        {
+            var proxyType = ObservableDynamicProxy<T>.Create(args);
+            return new ObservableFuzzyObject<T>(proxyType, module);
         }
     }
 }

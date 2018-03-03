@@ -2,7 +2,7 @@
 
 namespace FuzzyLib.Decorator
 {
-    public class FuzzyTermDecorator<TFuzzyTerm> : FuzzyTerm where TFuzzyTerm : FuzzyTerm
+    public class FuzzyTermDecorator<TFuzzyTerm> : IFuzzyTerm where TFuzzyTerm : IFuzzyTerm
     {
         private readonly TFuzzyTerm _wrapped;
 
@@ -18,12 +18,12 @@ namespace FuzzyLib.Decorator
             return new FuzzyTermDecorator<TFuzzyTerm>(towrap);
         }
 
-        public FuzzyTermDecorator<FuzzyOperatorAnd> And(FuzzyTerm term)
+        public FuzzyTermDecorator<FuzzyOperatorAnd> And(IFuzzyTerm term)
         {
             return new FuzzyTermDecorator<FuzzyOperatorAnd>(FuzzyOperator.And(_wrapped, term));
         }
 
-        public FuzzyTermDecorator<FuzzyOperatorOr> Or(FuzzyTerm term)
+        public FuzzyTermDecorator<FuzzyOperatorOr> Or(IFuzzyTerm term)
         {
             return new FuzzyTermDecorator<FuzzyOperatorOr>(FuzzyOperator.Or(_wrapped, term));
         }

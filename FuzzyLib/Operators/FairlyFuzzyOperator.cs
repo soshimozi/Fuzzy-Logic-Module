@@ -2,11 +2,11 @@
 
 namespace FuzzyLib.Operators
 {
-    public class FairlyFuzzyOperator : FuzzyTerm
+    public class FairlyFuzzyOperator : IFuzzyTerm
     {
-        private readonly FuzzyTerm _term;
+        private readonly IFuzzyTerm _term;
 
-        public FairlyFuzzyOperator(FuzzyTerm term)
+        public FairlyFuzzyOperator(IFuzzyTerm term)
         {
             _term = term;
         }
@@ -28,7 +28,7 @@ namespace FuzzyLib.Operators
 
         public override object Clone()
         {
-            return new FairlyFuzzyOperator(_term.Clone() as FuzzyTerm);
+            return new FairlyFuzzyOperator(_term.Clone() as IFuzzyTerm);
         }
     }
 }

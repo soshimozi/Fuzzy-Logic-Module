@@ -35,7 +35,7 @@ namespace FuzzyLib
         }
 
         //adds a rule to the module
-        public FuzzyRule AddRule(FuzzyTerm antecedent, FuzzyTerm consequence)
+        public FuzzyRule AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             var rule = new FuzzyRule(antecedent, consequence);
             _rules.Add(rule);
@@ -64,22 +64,22 @@ namespace FuzzyLib
             return gen.Invoke(_variables[key]);
         }
 
-        public static FuzzyTermDecorator<FuzzyOperatorAnd> And(FuzzyTerm lhs, FuzzyTerm rhs)
+        public static FuzzyTermDecorator<FuzzyOperatorAnd> And(IFuzzyTerm lhs, IFuzzyTerm rhs)
         {
             return new FuzzyTermDecorator<FuzzyOperatorAnd>(FuzzyOperator.And(lhs, rhs));
         }
 
-        public static FuzzyTermDecorator<FuzzyOperatorOr> Or(FuzzyTerm lhs, FuzzyTerm rhs)
+        public static FuzzyTermDecorator<FuzzyOperatorOr> Or(IFuzzyTerm lhs, IFuzzyTerm rhs)
         {
             return new FuzzyTermDecorator<FuzzyOperatorOr>(FuzzyOperator.Or(lhs, rhs));
         }
 
-        public static FuzzyTermDecorator<FairlyFuzzyOperator> Fairly(FuzzyTerm term)
+        public static FuzzyTermDecorator<FairlyFuzzyOperator> Fairly(IFuzzyTerm term)
         {
             return new FuzzyTermDecorator<FairlyFuzzyOperator>(FuzzyOperator.Fairly(term));
         }
 
-        public static FuzzyTermDecorator<VeryFuzzyOperator> Very(FuzzyTerm term)
+        public static FuzzyTermDecorator<VeryFuzzyOperator> Very(IFuzzyTerm term)
         {
             return new FuzzyTermDecorator<VeryFuzzyOperator>(FuzzyOperator.Very(term));
         }
@@ -89,7 +89,7 @@ namespace FuzzyLib
             get { return _variables[name]; }
         }
 
-        public FuzzyTerm GetFuzzySet(string setName)
+        public IFuzzyTerm GetFuzzySet(string setName)
         {
             var parts = setName.Split(':');
             if (parts.Length == 2)

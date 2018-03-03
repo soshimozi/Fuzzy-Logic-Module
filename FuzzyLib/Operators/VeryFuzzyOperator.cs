@@ -1,10 +1,10 @@
 ﻿namespace FuzzyLib.Operators
 {
-    public class VeryFuzzyOperator : FuzzyTerm
+    public class VeryFuzzyOperator : IFuzzyTerm
     {
-        private readonly FuzzyTerm _term;
+        private readonly IFuzzyTerm _term;
 
-        public VeryFuzzyOperator(FuzzyTerm term)
+        public VeryFuzzyOperator(IFuzzyTerm term)
         {
             _term = term;
         }
@@ -26,7 +26,7 @@
 
         public override object Clone()
         {
-            return new VeryFuzzyOperator(_term.Clone() as FuzzyTerm);
+            return new VeryFuzzyOperator(_term.Clone() as IFuzzyTerm);
         }
     }
 }
