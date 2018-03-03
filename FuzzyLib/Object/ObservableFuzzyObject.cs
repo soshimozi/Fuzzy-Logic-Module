@@ -23,6 +23,8 @@ namespace FuzzyLib.Object
                 Module.Fuzzify(pi.Name, DoubleSafeCaster.Convert(pi.GetValue(WrappedObject, null)));
             };
 
+
+            DefineVariables();
         }
 
         public ObservableFuzzyObject(FuzzyModule module, params object []  creationArgs) : base(module)
@@ -38,6 +40,7 @@ namespace FuzzyLib.Object
                 Module.Fuzzify(pi.Name, DoubleSafeCaster.Convert(pi.GetValue(WrappedObject, null)));
             };
 
+            DefineVariables();
         }
 
         public T Proxy
@@ -46,10 +49,8 @@ namespace FuzzyLib.Object
             private set;
         }
 
-        public static ObservableFuzzyObject<T> WrapType(FuzzyModule module, params object[] args)
+        private void DefineVariables()
         {
-            var proxyType = ObservableDynamicProxy<T>.Create(args);
-            return new ObservableFuzzyObject<T>(proxyType, module);
         }
     }
 }

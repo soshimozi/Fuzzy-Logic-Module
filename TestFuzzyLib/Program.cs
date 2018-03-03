@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using FuzzyLib;
 using FuzzyLib.Interfaces;
 using FuzzyLib.Object;
 using FuzzyLib.Observables;
 using FuzzyLib.Operators;
 using FuzzyLib.Sets;
-using FuzzyLib.Statement;
+using Parser;
 
 namespace TestFuzzyLib
 {
@@ -21,9 +22,12 @@ namespace TestFuzzyLib
             var map = new CharCodeMap();
             map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
 
-            var parser = new StatementParser(module, map);
-            var xmlLoader = new FuzzyXmlLoader<Enemy>(parser, fo);
-            xmlLoader.LoadXml(GetResourceTextFile("foo.xml"));
+            var parser = new FuzzyLogicXMLParser(module, map);
+
+            var xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(GetResourceTextFile("foo.xml"));
+
+            var xmlLoader = new FuzzyLogicXMLLoader<Enemy>(xmlDocument, parser, fo);
 
             // set some variables
             var enemyProxy = fo.Proxy;
@@ -37,8 +41,10 @@ namespace TestFuzzyLib
             fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
+
             var mod = new ObservableFuzzyObject<Enemy>(new FuzzyModule());
 
+            // TODO: use reflection to call DefineVariable based on type and decorated properties
             mod.DefineVariable(p => p.DistanceToTarget);
             mod.DefineVariable(p => p.AmmoStatus);
             mod.DefineVariable(p => p.Desirability);

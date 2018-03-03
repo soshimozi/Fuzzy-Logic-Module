@@ -1,66 +1,36 @@
-﻿using FuzzyLib.Interfaces;
+﻿using FuzzyLib;
+using FuzzyLib.Interfaces;
+using Parser;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FuzzyLib.Statement
+namespace TestFuzzyLib
 {
-    public class StatementParser : IParser
+    public class FuzzyLogicXMLParser : StatementParser
     {
         private readonly FuzzyModule _module;
-        private readonly CharCodeMap _characterMap;
-
-        private TokenCode _token;
-        private TokenType _tokenType;
-        private TextScanner _scanner;
-
-        protected static readonly TokenCode[] TcAddOps
-            =
+        public FuzzyLogicXMLParser(FuzzyModule module, CharCodeMap map) : base(map)
         {
-            TokenCode.Or
-        };
-
-        protected static readonly TokenCode[] TcMulOps
-            =
-        {
-            TokenCode.And,
-            TokenCode.Very,
-            TokenCode.Fairly
-        };
-
-        public StatementParser(FuzzyModule fuzzyModule, CharCodeMap map)
-        {
-            _characterMap = map;
-            _module = fuzzyModule;
+            _module = module;
         }
 
-        protected void GetToken()
+        public override void Parse()
         {
-            _tokenType = _scanner.Get();
-            _token = _tokenType.Code;
-        }
-
-        public Tuple<IFuzzyTerm, IFuzzyTerm> ParseStatement(string statement)
-        {
-            var textbuffer =
-                new TextBuffer(statement);
-
-            // initialize scanner with our new buffer
-            // NOTE: this makes this class non-thread safe
-            _scanner = new TextScanner(textbuffer, _characterMap);
-
             GetToken();
-
-            if (_token != TokenCode.If) throw new Exception("Missing If");
+            if (TokenCode != TokenCode.If) throw new Exception("Missing If");
 
             GetToken();
             var antecedent = ParseExpression();
 
-            if (_token != TokenCode.Then) throw new Exception("Missing Then");
+            if (TokenCode != TokenCode.Then) throw new Exception("Missing Then");
 
             GetToken();
             var consequence = ParseExpression();
 
-            return new Tuple<IFuzzyTerm, IFuzzyTerm>(antecedent, consequence);
+            _module.AddRule(antecedent, consequence);
         }
 
         private IFuzzyTerm ParseExpression()
@@ -73,9 +43,9 @@ namespace FuzzyLib.Statement
         {
             var resultTerm = ParseTerm();
 
-            while (TcAddOps.Any(tc => tc == _token))
+            while (TcAddOps.Any(tc => tc == TokenCode))
             {
-                var op = _token;
+                var op = TokenCode;
                 GetToken();
 
                 var operandTerm = ParseTerm();
@@ -92,9 +62,9 @@ namespace FuzzyLib.Statement
         {
             var resultTerm = ParseFactor();
 
-            while (TcMulOps.Any(tc => tc == _token))
+            while (TcMulOps.Any(tc => tc == TokenCode))
             {
-                var op = _token;
+                var op = TokenCode;
                 GetToken();
                 var operandTerm = ParseFactor();
 
@@ -111,7 +81,7 @@ namespace FuzzyLib.Statement
         {
             IFuzzyTerm resultTerm;
 
-            switch (_token)
+            switch (TokenCode)
             {
                 case TokenCode.Identifier:
                     resultTerm = ParseVariable();
@@ -131,7 +101,7 @@ namespace FuzzyLib.Statement
                     GetToken();
                     resultTerm = ParseExpression();
 
-                    if (_token == TokenCode.RParen)
+                    if (TokenCode == TokenCode.RParen)
                         GetToken();
                     else
                         throw new Exception("Missing Right Parenthesis");
@@ -146,7 +116,7 @@ namespace FuzzyLib.Statement
 
         private IFuzzyTerm ParseVariable()
         {
-            var setName = _tokenType.TokenString;
+            var setName = TokenType.TokenString;
 
             GetToken();
 
@@ -155,7 +125,6 @@ namespace FuzzyLib.Statement
 
             return returnTerm;
         }
-
 
     }
 }
