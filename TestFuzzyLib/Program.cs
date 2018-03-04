@@ -44,7 +44,6 @@ namespace TestFuzzyLib
             var fob = new ObservableFuzzyObject<Enemy>(fm);
 
 
-            var ps = new FuzzyLogicStatementParser(fm, map);
 
             // TODO: use reflection to call DefineVariable based on type and decorated properties
             fob.DefineVariable(p => p.DistanceToTarget);
@@ -52,50 +51,46 @@ namespace TestFuzzyLib
             fob.DefineVariable(p => p.Desirability);
             fob.DefineVariable(p => p.Skill);
 
-            fob.DefineFuzzyTerm("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
-                .DefineFuzzyTerm("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
-                .DefineFuzzyTerm("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
+            fob.DefineFuzzyTerm("Very_Skilled", p => p.Skill, new RightShoulderFuzzySet(20, 100, 80));
+            fob.DefineFuzzyTerm("Skilled", p => p.Skill, new TriangleFuzzySet(10, 30, 20));
+            fob.DefineFuzzyTerm("Low_Skilled", p => p.Skill, new TriangleFuzzySet(0, 20, 5));
 
-            fob.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
-                .DefineFuzzyTerm("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
-                .DefineFuzzyTerm("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
+            fob.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, new RightShoulderFuzzySet(10, 100, 20));
+            fob.DefineFuzzyTerm("Ammo_Okay", p => p.AmmoStatus, new TriangleFuzzySet(0, 30, 10));
+            fob.DefineFuzzyTerm("Ammo_Low", p => p.AmmoStatus, new TriangleFuzzySet(0, 10, 0));
 
-            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
-                .DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
-                .DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
+            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, new LeftShoulderFuzzySet(0, 50, 25));
+            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, new TriangleFuzzySet(25, 75, 50));
+            fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, new RightShoulderFuzzySet(50, 100, 75));
 
-            fob.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
-                .DefineFuzzyTerm("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
-                .DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
+            fob.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, new LeftShoulderFuzzySet(0, 150, 25));
+            fob.DefineFuzzyTerm("Target_Medium", p => p.DistanceToTarget, new TriangleFuzzySet(25, 300, 150));
+            fob.DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, new RightShoulderFuzzySet( 150, 1000, 300));
 
-            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
-            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
-            fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
+            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, new LeftShoulderFuzzySet(0, 50, 25));
+            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, new TriangleFuzzySet( 25, 75, 50));
+            fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, new RightShoulderFuzzySet(50, 100, 75));
 
             // add a new rule via parsing
-            ps.ParseStatement("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
+            var ps = new FuzzyLogicStatementParser(fm, map);
 
-            dynamic modwrapper = fob.GetDynamic();
+            ps.ParseRule("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
+
             fob.AddRule(
-                FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Low),
-                       FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
-                       FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
+                FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Low"]),
+                       FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Loads"]),
+                       FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Okay"]))
                 ),
-                modwrapper.Undesirable);
-
-
-            fob.AddRule(
-                FuzzyOperator.And(fob["Target_Medium"], fob["Ammo_Low"]),
                 fob["Undesirable"]);
 
 
-            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Loads"]), fob.WrapSet("Desirable"));
-            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
-            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
+            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Loads"]), fob["Desirable"]);
+            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
+            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
 
-            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Loads"]), fob["Desirable"]);
-            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Okay"]), fob["Undesirable"]);
-            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Low"]), fob["Undesirable"]);
+            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Loads"]), fob["Desirable"]);
+            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Okay"]), fob["Undesirable"]);
+            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Low"]), fob["Undesirable"]);
 
             var enemy = fob.Proxy;
             enemy.DistanceToTarget = 12;
@@ -129,24 +124,24 @@ namespace TestFuzzyLib
             }
         }
 
-        public static IFuzzySet CreateTriangularSet(double min, double peak, double max)
-        {
-            return new TriangleFuzzySet(min, max, peak);
-        }
+        //public static IFuzzySetManifold CreateTriangularSet(double min, double peak, double max)
+        //{
+        //    return new TriangleFuzzySet(min, max, peak);
+        //}
 
-        public static IFuzzySet CreateLeftShoulderSet(double min, double peak, double max)
-        {
-            return new LeftShoulderFuzzySet(min, max, peak);
-        }
+        //public static IFuzzySetManifold CreateLeftShoulderSet(double min, double peak, double max)
+        //{
+        //    return new LeftShoulderFuzzySet(min, max, peak);
+        //}
 
-        public static IFuzzySet CreateRightShoulderSet(double min, double peak, double max)
-        {
-            return new RightShoulderFuzzySet(min, max, peak);
-        }
+        //public static IFuzzySetManifold CreateRightShoulderSet(double min, double peak, double max)
+        //{
+        //    return new RightShoulderFuzzySet(min, max, peak);
+        //}
 
-        public static IFuzzySet CreateSingletonShoulderSet(double min, double peak, double max)
-        {
-            return new SingletonFuzzySet(min, max, peak);
-        }
+        //public static IFuzzySetManifold CreateSingletonShoulderSet(double min, double peak, double max)
+        //{
+        //    return new SingletonFuzzySet(min, max, peak);
+        //}
     }
 }

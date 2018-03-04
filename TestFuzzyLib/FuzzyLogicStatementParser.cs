@@ -14,7 +14,7 @@ namespace TestFuzzyLib
         private readonly FuzzyModule _module;
         public FuzzyLogicStatementParser(FuzzyModule module, CharCodeMap map) : base(map) => _module = module;
 
-        public override void Parse()
+        protected override void Parse()
         {
             GetToken();
             if (TokenCode != TokenCode.If) throw new Exception("Missing If");

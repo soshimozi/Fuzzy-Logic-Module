@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FuzzyModule name="foo" type="TestFuzzyLib.Foo, TestFuzzyLib">
+  <FuzzyShapeRefs>
+    <ShapeRef name="RightShoulder" type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib" />
+    <ShapeRef name="LeftShoulder" type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib" />
+    <ShapeRef name="Triangle" type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib" />
+    <ShapeRef name="Singleton" type="FuzzyLib.Sets.SingletonFuzzySet, FuzzyLib" />
+  </FuzzyShapeRefs>
   <FuzzyVariables>
     <FuzzyVariable name="DistanceToTarget">
       <Terms>

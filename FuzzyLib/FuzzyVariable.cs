@@ -7,7 +7,7 @@ namespace FuzzyLib
 {
     public class FuzzyVariable
     {
-        private readonly Dictionary<string, IFuzzySet> _memberSets = new Dictionary<string, IFuzzySet>();
+        private readonly Dictionary<string, IFuzzySetManifold> _memberSets = new Dictionary<string, IFuzzySetManifold>();
 
         private double _minimumRange;
         private double _maximumRange;
@@ -29,7 +29,7 @@ namespace FuzzyLib
 
         public FuzzyTermProxy AddFuzzyTerm(
             string name, 
-            IFuzzySet set)
+            IFuzzySetManifold set)
         {
             _memberSets.Add(name, set);
             AdjustRangeToFit(set.MinBound, set.MaxBound);

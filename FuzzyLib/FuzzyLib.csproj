@@ -44,7 +44,7 @@
     <Compile Include="AOP\DynamicProxy.cs" />
     <Compile Include="AOP\IDynamicProxy.cs" />
     <Compile Include="FuzzyTermProxy.cs" />
-    <Compile Include="Interfaces\IFuzzySet.cs" />
+    <Compile Include="Interfaces\IFuzzySetManifold.cs" />
     <Compile Include="Interfaces\IFuzzyTerm.cs" />
     <Compile Include="Infrastructure\DoubleSafeCaster.cs" />
     <Compile Include="Infrastructure\DynamicWrapper.cs" />

@@ -29,19 +29,17 @@ namespace FuzzyLib.Object.Generic
             Module = module;
         }
 
-        public FuzzyObject<T> AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
+        public void AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             Module.AddRule(antecedent, consequence);
-            return this;
         }
 
-        public FuzzyObject<T> AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
+        public void AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
         {
             Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
-            return this;
         }
 
-        public FuzzyTermDecorator<FuzzyTermProxy> WrapSet(string name)
+        public FuzzyTermDecorator<FuzzyTermProxy> If(string name)
         {
             return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzyTermProxy>(FuzzySets[name]) : null;
         }
@@ -59,18 +57,16 @@ namespace FuzzyLib.Object.Generic
         //    return this;
         //}
 
-        public FuzzyObject<T> DefineFuzzyTerm<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySet set)
+        public void DefineFuzzyTerm<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySetManifold set)
         {
             var pi = expr.GetPropertyInfo();
             if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
             {
                 FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzyTerm(name, set));
             }
-
-            return this;
         }
 
-        public void DefineFuzzyTermByName(string setName, string variableName, IFuzzySet set)
+        public void DefineFuzzyTermByName(string setName, string variableName, IFuzzySetManifold set)
         {
             if (VariableReferences.ContainsKey(variableName))
             {
@@ -80,10 +76,10 @@ namespace FuzzyLib.Object.Generic
 
         public FuzzyTermProxy this[string name]
         {
-            get { return FuzzyTerm(name); }
+            get { return GetFuzzyTerm(name); }
         }
 
-        public FuzzyTermProxy FuzzyTerm(string name)
+        protected FuzzyTermProxy GetFuzzyTerm(string name)
         {
             return FuzzySets.ContainsKey(name) ? FuzzySets[name] : null;
         }
@@ -156,116 +152,5 @@ namespace FuzzyLib.Object.Generic
         {
             return new DynamicWrapper<FuzzyTermProxy>(FuzzySets);
         }
-
-        #region Compile Overrides
-        public FuzzyObject<T> Compile<T1>(Expression<Func<T, T1>> func)
-        {
-            // fuzzfy
-            Fuzzify(func);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-            Fuzzify(func5);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-            Fuzzify(func5);
-            Fuzzify(func6);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-            Fuzzify(func5);
-            Fuzzify(func6);
-            Fuzzify(func7);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7, Expression<Func<T, T8>> func8)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-            Fuzzify(func5);
-            Fuzzify(func6);
-            Fuzzify(func7);
-            Fuzzify(func8);
-
-            return this;
-        }
-
-        public FuzzyObject<T> Compile<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T1>> func, Expression<Func<T, T2>> func2, Expression<Func<T, T3>> func3, Expression<Func<T, T4>> func4, Expression<Func<T, T5>> func5, Expression<Func<T, T6>> func6, Expression<Func<T, T7>> func7, Expression<Func<T, T8>> func8, Expression<Func<T, T9>> func9)
-        {
-            // fuzzfy
-            Fuzzify(func);
-            Fuzzify(func2);
-            Fuzzify(func3);
-            Fuzzify(func4);
-            Fuzzify(func5);
-            Fuzzify(func6);
-            Fuzzify(func7);
-            Fuzzify(func8);
-            Fuzzify(func9);
-
-            return this;
-        }
-        #endregion
-
     }
 }

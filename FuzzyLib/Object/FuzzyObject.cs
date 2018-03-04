@@ -46,7 +46,7 @@ namespace FuzzyLib.Object
         }
 
 
-        public FuzzyObject AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<object, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : IFuzzySet
+        public FuzzyObject AddFuzzySet<TProp, TFuzzy>(string name, Expression<Func<object, TProp>> expr, Func<double, double, double, TFuzzy> setfunc, int min, int peak, int max) where TFuzzy : IFuzzySetManifold
         {
             var pi = expr.GetPropertyInfo();
             if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
@@ -58,7 +58,7 @@ namespace FuzzyLib.Object
             return this;
         }
 
-        public void AddFuzzySet(string setName, string variableName, IFuzzySet set)
+        public void AddFuzzySet(string setName, string variableName, IFuzzySetManifold set)
         {
             if (VariableReferences.ContainsKey(variableName))
             {

@@ -4,7 +4,7 @@ using System;
 namespace FuzzyLib.Sets
 {
 
-    public class TriangleFuzzySet : IFuzzySet
+    public class TriangleFuzzySet : IFuzzySetManifold
     {
         //the values that define the shape of this FLV
         private readonly double _peakPoint;

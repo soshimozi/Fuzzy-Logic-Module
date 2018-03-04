@@ -2,7 +2,7 @@
 
 namespace FuzzyLib.Sets
 {
-    public class SingletonFuzzySet : IFuzzySet
+    public class SingletonFuzzySet : IFuzzySetManifold
     {
         //the values that define the shape of this FLV
         private readonly double _midPoint;

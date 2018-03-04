@@ -24,23 +24,24 @@ namespace TestFuzzyLib
             Load(document);
         }
 
-        //public void LoadXml(string xml)
-        //{
-        //    var xmlDoc = new XmlDocument();
-        //    xmlDoc.LoadXml(xml);
-
-        //    Load(xmlDoc);
-        //}
-
         private void Load(XmlDocument doc)
         {
             var moduleNode = doc.SelectSingleNode("FuzzyModule");
 
             if (moduleNode != null)
+            {
+                ReadShapeReferences(moduleNode);
+
                 // read variable section first
                 ReadVariables(moduleNode);
 
-            ReadRules(moduleNode);
+                ReadRules(moduleNode);
+            }
+        }
+
+        private void ReadShapeReferences(XmlNode moduleNode)
+        {
+            throw new NotImplementedException();
         }
 
         private void ReadRules(XmlNode moduleNode)
@@ -48,12 +49,7 @@ namespace TestFuzzyLib
             ProcessNodeList<XmlNode>(moduleNode, "FuzzyRules/Rule", n =>
             {
                 var ruleText = n.FirstChild.InnerText;
-
-                _parser.ParseStatement(ruleText);
-
-                //var rule = _parser.ParseStatement(ruleText);
-                //_module.AddRule(rule.Item1, rule.Item2);
-
+                _parser.ParseRule(ruleText);
             });
         }
 
@@ -122,7 +118,7 @@ namespace TestFuzzyLib
             _objectToRead.DefineFuzzyTermByName(setName, variable, shape);
         }
 
-        private static IFuzzySet MakeShape(XmlNode shapeNode, Type shapeType)
+        private static IFuzzySetManifold MakeShape(XmlNode shapeNode, Type shapeType)
         {
             // make collection of parameters
             var parameters = new List<ParameterInfo>();
@@ -151,8 +147,8 @@ namespace TestFuzzyLib
                 if (constructor == null) return null;
 
                 var constructorParameters = BuildConstructorParameters(constructor, parameters);
-                if (typeof(IFuzzySet).IsAssignableFrom(shapeType))
-                    return constructor.Invoke(constructorParameters) as IFuzzySet;
+                if (typeof(IFuzzySetManifold).IsAssignableFrom(shapeType))
+                    return constructor.Invoke(constructorParameters) as IFuzzySetManifold;
             }
 
             return null;

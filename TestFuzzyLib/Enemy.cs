@@ -5,7 +5,7 @@ using FuzzyLib.Observables;
 namespace TestFuzzyLib
 {
 
-    public class Enemy : DynamicPOCO<Enemy>
+    public class Enemy : DynamicPOCO
     {
         public double Health { get; set; }
 

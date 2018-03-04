@@ -3,7 +3,7 @@ using System;
 
 namespace FuzzyLib.Sets
 {
-    public class RightShoulderFuzzySet : IFuzzySet
+    public class RightShoulderFuzzySet : IFuzzySetManifold
     {
         //the values that define the shape of this FLV
         private readonly double _peakPoint;
