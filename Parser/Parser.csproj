@@ -43,9 +43,9 @@
   <ItemGroup>
     <Compile Include="CharacterType.cs" />
     <Compile Include="CharacterTypeExpression.cs" />
-    <Compile Include="CharCodeMap.cs" />
     <Compile Include="EndToken.cs" />
     <Compile Include="ErrorToken.cs" />
+    <Compile Include="ICharCodeMap.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialToken.cs" />

@@ -46,9 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharCodeMap.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="FuzzyLogicXMLLoader.cs" />
-    <Compile Include="FuzzyLogicXMLParser.cs" />
+    <Compile Include="FuzzyLogicStatementParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

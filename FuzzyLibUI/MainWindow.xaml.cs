@@ -138,21 +138,21 @@ namespace FuzzyLibUI
 
         }
 
-        private DataService _dataService = new DataService();
+        //private DataService _dataService = new DataService();
 
         private void LoadData()
         {
-            var modules = _dataService.LoadModules();
-            foreach (var module in modules)
-            {
-                Modules.Add(module);
-            }
+            //var modules = _dataService.LoadModules();
+            //foreach (var module in modules)
+            //{
+            //    Modules.Add(module);
+            //}
 
-            var shapes = _dataService.GetShapes();
-            foreach (var shape in shapes)
-            {
-                Shapes.Add(shape);
-            }
+            //var shapes = _dataService.GetShapes();
+            //foreach (var shape in shapes)
+            //{
+            //    Shapes.Add(shape);
+            //}
 
 
             //using (var db = new FuzzyLogicEntities())

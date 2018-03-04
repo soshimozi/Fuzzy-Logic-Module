@@ -18,8 +18,8 @@ namespace Parser
 
         private bool _isReservedWord;
 
-        private readonly CharCodeMap _characterMap;
-        public WordToken(CharCodeMap characterMap)
+        private readonly ICharCodeMap _characterMap;
+        public WordToken(ICharCodeMap characterMap)
         {
             _characterMap = characterMap;
         }

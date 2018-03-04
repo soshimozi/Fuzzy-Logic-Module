@@ -21,7 +21,7 @@ namespace TestFuzzyLib
             var map = new CharCodeMap();
             map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
 
-            var parser = new FuzzyLogicXMLParser(module, map);
+            var parser = new FuzzyLogicStatementParser(module, map);
 
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(GetResourceTextFile("foo.xml"));
@@ -40,37 +40,43 @@ namespace TestFuzzyLib
             fo.DeFuzzify(e => e.Desirability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("Desirability: {0}", enemyProxy.Desirability);
 
+            var fm = new FuzzyModule();
+            var fob = new ObservableFuzzyObject<Enemy>(fm);
 
-            var mod = new ObservableFuzzyObject<Enemy>(new FuzzyModule());
+
+            var ps = new FuzzyLogicStatementParser(fm, map);
 
             // TODO: use reflection to call DefineVariable based on type and decorated properties
-            mod.DefineVariable(p => p.DistanceToTarget);
-            mod.DefineVariable(p => p.AmmoStatus);
-            mod.DefineVariable(p => p.Desirability);
-            mod.DefineVariable(p => p.Skill);
+            fob.DefineVariable(p => p.DistanceToTarget);
+            fob.DefineVariable(p => p.AmmoStatus);
+            fob.DefineVariable(p => p.Desirability);
+            fob.DefineVariable(p => p.Skill);
 
-            mod.DefineFuzzyTerm("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
+            fob.DefineFuzzyTerm("Very_Skilled", p => p.Skill, CreateRightShoulderSet(20, 100, 80))
                 .DefineFuzzyTerm("Skilled", p => p.Skill, CreateTriangularSet(10, 30, 20))
                 .DefineFuzzyTerm("Low_Skilled", p => p.Skill, CreateLeftShoulderSet(0, 20, 5));
 
-            mod.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
+            fob.DefineFuzzyTerm("Ammo_Loads", p => p.AmmoStatus, CreateRightShoulderSet(10, 100, 20))
                 .DefineFuzzyTerm("Ammo_Okay", p => p.AmmoStatus, CreateTriangularSet(0, 30, 10))
                 .DefineFuzzyTerm("Ammo_Low", p => p.AmmoStatus, CreateTriangularSet(0, 10, 0));
 
-            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
+            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet(0, 25, 50))
                 .DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet(25, 50, 75))
                 .DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 75, 100));
 
-            mod.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
+            fob.DefineFuzzyTerm("Target_Close", p => p.DistanceToTarget, CreateLeftShoulderSet(0, 150, 25))
                 .DefineFuzzyTerm("Target_Medium", p => p.DistanceToTarget, CreateTriangularSet(25, 300, 150))
                 .DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, CreateRightShoulderSet( 150, 1000, 300));
 
-            mod.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
-            mod.DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
-            mod.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
+            fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, CreateLeftShoulderSet( 0, 50, 25));
+            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, CreateTriangularSet( 25, 75, 50));
+            fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, CreateRightShoulderSet(50, 100, 75));
 
-            dynamic modwrapper = mod.GetDynamic();
-            mod.AddRule(
+            // add a new rule via parsing
+            ps.ParseStatement("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
+
+            dynamic modwrapper = fob.GetDynamic();
+            fob.AddRule(
                 FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Low),
                        FuzzyOperator.Or(FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Loads),
                        FuzzyOperator.And(modwrapper.Target_Close, modwrapper.Ammo_Okay))
@@ -78,31 +84,31 @@ namespace TestFuzzyLib
                 modwrapper.Undesirable);
 
 
-            mod.AddRule(
-                FuzzyOperator.And(mod["Target_Medium"], mod["Ammo_Low"]),
-                mod["Undesirable"]);
+            fob.AddRule(
+                FuzzyOperator.And(fob["Target_Medium"], fob["Ammo_Low"]),
+                fob["Undesirable"]);
 
 
-            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Loads"]), mod.WrapSet("Desirable"));
-            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Okay"]), mod["VeryDesirable"]);
-            mod.AddRule(mod.WrapSet("Target_Medium").And(mod["Ammo_Low"]), mod["Desirable"]);
+            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Loads"]), fob.WrapSet("Desirable"));
+            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
+            fob.AddRule(fob.WrapSet("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
 
-            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Loads"]), mod["Desirable"]);
-            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Okay"]), mod["Undesirable"]);
-            mod.AddRule(mod.WrapSet("Target_Far").And(mod["Ammo_Low"]), mod["Undesirable"]);
+            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Loads"]), fob["Desirable"]);
+            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Okay"]), fob["Undesirable"]);
+            fob.AddRule(fob.WrapSet("Target_Far").And(fob["Ammo_Low"]), fob["Undesirable"]);
 
-            var enemy = mod.Proxy;
+            var enemy = fob.Proxy;
             enemy.DistanceToTarget = 12;
             enemy.AmmoStatus = 12;
 
             // get result
-            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            fob.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("First result: {0}", enemy.Desirability);
 
             enemy.DistanceToTarget = 175;
             enemy.AmmoStatus = 43;
 
-            mod.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+            fob.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("Second result: {0}", enemy.Desirability);
 
             Console.ReadKey(true);

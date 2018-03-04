@@ -6,7 +6,7 @@ namespace Parser
 {
     public abstract class StatementParser : IParser
     {
-        private readonly CharCodeMap _characterMap;
+        private readonly ICharCodeMap _characterMap;
 
         private TokenCode _token;
         private TokenType _tokenType;
@@ -26,7 +26,7 @@ namespace Parser
             TokenCode.Fairly
         };
 
-        public StatementParser(CharCodeMap map)
+        public StatementParser(ICharCodeMap map)
         {
             _characterMap = map;
         }

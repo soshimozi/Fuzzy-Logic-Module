@@ -15,6 +15,8 @@ namespace FuzzyLibUI
 
             using (var db = new FuzzyLogicEntities())
             {
+                var modles = db.FuzzyModules.ToList();
+
                 modules.AddRange(db.FuzzyModules.ToList().Select(LoadModule));
 
                 //var dbmodules = db.FuzzyModules;

@@ -1,31 +1,16 @@
-﻿using System;
+﻿using Parser;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace TestFuzzyLib
 {
-    public enum CharacterType
+    public class CharCodeMap : ICharCodeMap
     {
-        Letter,
-        Digit,
-        Special,
-        Error,
-        EndOfLine
-    }
-
-    public class CharacterTypeExpression
-    {
-        public CharacterType Type { get; set; }
-        public Regex Expression { get; set; }
-    }
-
-    public class CharCodeMap
-    {
-        private Dictionary<char, CharacterType> _map = new Dictionary<char, CharacterType>();
+        private readonly Dictionary<char, CharacterType> _map = new Dictionary<char, CharacterType>();
 
         public void LoadXml(string xml)
         {
@@ -76,7 +61,7 @@ namespace TestFuzzyLib
             {
                 foreach (var expression in expressions)
                 {
-                    var matches = expression.Expression.Matches(c.ToString());
+                    var matches = expression.Expression.Matches(c.ToString(CultureInfo.InvariantCulture));
                     if (matches.Count == 0) continue;
 
                     // found a match

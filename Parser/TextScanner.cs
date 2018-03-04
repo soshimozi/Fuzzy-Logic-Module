@@ -5,9 +5,9 @@ namespace Parser
     public class TextScanner
     {
         private readonly TextBuffer _buffer;
-        private readonly CharCodeMap _map;
+        private readonly ICharCodeMap _map;
 
-        public TextScanner(TextBuffer buffer, CharCodeMap map)
+        public TextScanner(TextBuffer buffer, ICharCodeMap map)
         {
             _buffer = buffer;
             _map = map;
