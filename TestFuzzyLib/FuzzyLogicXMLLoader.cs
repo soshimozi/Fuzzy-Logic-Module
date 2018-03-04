@@ -15,12 +15,12 @@ namespace TestFuzzyLib
     {
         private readonly IParser _parser;
         private readonly FuzzyObject<T> _objectToRead;
+        private readonly Dictionary<string, Type> _typeMap = new Dictionary<string, Type>();
 
         public FuzzyLogicXMLLoader(XmlDocument document, IParser parser, FuzzyObject<T> objectToRead)
         {
             _parser = parser;
             _objectToRead = objectToRead;
-
             Load(document);
         }
 
@@ -41,7 +41,15 @@ namespace TestFuzzyLib
 
         private void ReadShapeReferences(XmlNode moduleNode)
         {
-            throw new NotImplementedException();
+
+            ProcessNodeList<XmlNode>(moduleNode, "FuzzyShapeRefs/ShapeRef", n =>
+            {
+                var name = GetAttributeValue("name", n);
+                var typeName = GetAttributeValue("type", n);
+                var shapeType = Type.GetType(typeName);
+
+                _typeMap.Add(name, shapeType);
+            });
         }
 
         private void ReadRules(XmlNode moduleNode)
@@ -108,11 +116,18 @@ namespace TestFuzzyLib
             var shapeNode = termNode.SelectSingleNode("Shape");
             if (shapeNode == null) return;
 
-            var typeName = GetAttributeValue("type", shapeNode);
-            if (typeName == null) return;
+            var shapeRef = GetAttributeValue("ref", shapeNode);
 
-            var shapeType = Type.GetType(typeName);
+            if (!_typeMap.TryGetValue(shapeRef, out Type shapeType))
+                return;
+
             if (shapeType == null) return;
+
+            //var typeName = GetAttributeValue("type", shapeNode);
+            //if (typeName == null) return;
+
+            //var shapeType = Type.GetType(typeName);
+            //if (shapeType == null) return;
 
             var shape = MakeShape(shapeNode, shapeType);
             _objectToRead.DefineFuzzyTermByName(setName, variable, shape);

@@ -10,7 +10,7 @@
     <FuzzyVariable name="DistanceToTarget">
       <Terms>
         <Term name="Target_Close">
-          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+          <Shape ref="LeftShoulder">
             <parameters>
               <add name="min" value="0" />
               <add name="peak" value="25" />
@@ -19,7 +19,7 @@
           </Shape>
         </Term>
         <Term name="Target_Medium">
-          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+          <Shape ref="Triangle">
             <parameters>
               <add name="min" value="15" />
               <add name="peak" value="150" />
@@ -28,7 +28,7 @@
           </Shape>
         </Term>
         <Term name="Target_Far">
-          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+          <Shape ref="RightShoulder">
             <parameters>
               <add name="min" value="150" />
               <add name="peak" value="300" />
@@ -41,7 +41,7 @@
     <FuzzyVariable name="Desirability">
       <Terms>
         <Term name="Undesirable">
-          <Shape type="FuzzyLib.Sets.LeftShoulderFuzzySet, FuzzyLib">
+          <Shape ref="LeftShoulder">
             <parameters>
               <add name="min" value="0" />
               <add name="peak" value="25" />
@@ -50,7 +50,7 @@
           </Shape>
         </Term>
         <Term name="Desirable">
-          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+          <Shape ref="Triangle">
             <parameters>
               <add name="min" value="25" />
               <add name="peak" value="50" />
@@ -59,7 +59,7 @@
           </Shape>
         </Term>
         <Term name="VeryDesirable">
-          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+          <Shape ref="RightShoulder">
             <parameters>
               <add name="min" value="50" />
               <add name="peak" value="75" />
@@ -72,7 +72,7 @@
     <FuzzyVariable name="AmmoStatus">
       <Terms>
         <Term name="Ammo_Low">
-          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+          <Shape ref="Triangle">
             <parameters>
               <add name="min" value="0" />
               <add name="peak" value="0" />
@@ -81,7 +81,7 @@
           </Shape>
         </Term>
         <Term name="Ammo_Okay">
-          <Shape type="FuzzyLib.Sets.TriangleFuzzySet, FuzzyLib">
+          <Shape ref="Triangle">
             <parameters>
               <add name="min" value="0" />
               <add name="peak" value="10" />
@@ -90,7 +90,7 @@
           </Shape>
         </Term>
         <Term name="Ammo_Loads">
-          <Shape type="FuzzyLib.Sets.RightShoulderFuzzySet, FuzzyLib">
+          <Shape ref="RightShoulder">
             <parameters>
               <add name="min" value="10" />
               <add name="peak" value="30" />
