@@ -96,12 +96,20 @@ Using verbose syntax
 module.AddRule(
     FuzzyOperator.Or(FuzzyOperator.And(fo["Target_Close"], fo["Ammo_Low"]),
            FuzzyOperator.Or(FuzzyOperator.And(fo["Target_Close"], fo["Ammo_Loads"]),
-           FuzzyOperator.And(fo["Target_Close"], fo["Ammo_Okay"]))), fob["Undesirable"]);
+           FuzzyOperator.And(fo["Target_Close"], fo["Ammo_Okay"]))), fo["Undesirable"]);
 
 ```
 The above is equavalent to the statement ```IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) OR (DistanceToTarget:TargetClose AND AmmoStatus:Ammo_Okay) THEN Desirability:Undesirable.```
 
 You can see that the expression syntax is easier, but the verbose syntax is more powerful
 
+###### Resolving values
+In order to resolve values you must "defuzzify" the values using the Defuzzify method.
+
+```
+ fo.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
+ ```
+ The above code will resolve the "fuzzy" input values and provide a concrete value on the output.  The value will be applied to the property in the first argument using the method in the second argument.  There are two methods available: MaxAverage and Centroid.
+ 
 ###### Shapes
 
