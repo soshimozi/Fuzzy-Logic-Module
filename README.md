@@ -23,7 +23,7 @@ the "yes" condition.
 
 ## Examples
 
-###### Decorating your POCO
+##### Decorating your POCO
 ```
     public class Enemy : DynamicPOCO
     {
@@ -46,7 +46,7 @@ the "yes" condition.
     }
 ```
 
-###### Wrapping an object
+##### Wrapping an object
 ```
 var module = new FuzzyModule();
 
@@ -59,7 +59,7 @@ var module = new FuzzyModule();
  Assert(enemyWrapped.DistanceToTarget == 23);
 ```
 
-###### Defining some terms (terms are used in rules)
+##### Defining some terms (terms are used in rules)
 ```
 fo.DefineFuzzyTerm("Very_Skilled", p => p.Skill, new RightShoulderFuzzySet(20, 100, 80));
 fo.DefineFuzzyTerm("Skilled", p => p.Skill, new TriangleFuzzySet(10, 30, 20));
@@ -84,7 +84,7 @@ fo.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, new RightShoulderFuzzyS
 ```
 By defining a term you are telling the fuzzy logic module that when referencing that term it should use the resulting shape to determine the degree of membership in the set.  The term will associate a property of the object as input to the shape to determine the overall degree of membership.  Terms are used exclusively in rules as the following examples illustrate.
 
-###### Defining some rules
+##### Defining some rules
 
 Using the expression syntax
 ```
@@ -103,7 +103,7 @@ The above is equavalent to the statement ```IF (DistanceToTarget:Target_Close AN
 
 You can see that the expression syntax is easier, but the verbose syntax is more powerful
 
-###### Resolving values
+##### Resolving values
 In order to resolve values you must "defuzzify" the values using the Defuzzify method.
 
 ```
@@ -111,5 +111,5 @@ In order to resolve values you must "defuzzify" the values using the Defuzzify m
  ```
  The above code will resolve the "fuzzy" input values and provide a concrete value on the output.  The value will be applied to the property in the first argument using the method in the second argument.  There are two methods available: MaxAverage and Centroid.
  
-###### Shapes
+##### Shapes
 
