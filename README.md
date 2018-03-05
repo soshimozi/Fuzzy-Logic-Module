@@ -99,7 +99,7 @@ module.AddRule(
            FuzzyOperator.And(fo["Target_Close"], fo["Ammo_Okay"]))), fob["Undesirable"]);
 
 ```
-The above is equavalent to the statement "IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) OR (DistanceToTarget:TargetClose AND AmmoStatus:Ammo_Okay) THEN Desirability:Undesirable.
+The above is equavalent to the statement ```IF (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Low) OR (DistanceToTarget:Target_Close AND AmmoStatus:Ammo_Loads) OR (DistanceToTarget:TargetClose AND AmmoStatus:Ammo_Okay) THEN Desirability:Undesirable.```
 
 You can see that the expression syntax is easier, but the verbose syntax is more powerful
 
