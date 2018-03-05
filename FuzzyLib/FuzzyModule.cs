@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using FuzzyLib.Decorator;
 using FuzzyLib.Interfaces;
 using FuzzyLib.Operators;
+using FuzzyLib.Parser;
 
 namespace FuzzyLib
 {
@@ -36,12 +37,12 @@ namespace FuzzyLib
         }
 
         //adds a rule to the module
-        public FuzzyRule AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
+        public void AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
         {
             var rule = new FuzzyRule(antecedent, consequence);
             _rules.Add(rule);
 
-            return rule;
+            //return rule;
         }
 
         //this method calls the Fuzzify method of the named FLV 
@@ -68,6 +69,12 @@ namespace FuzzyLib
         public FuzzyVariable this[string name]
         {
             get { return _variables[name]; }
+        }
+
+        public void AddRule(string ruleStatement)
+        {
+            var ps = new FuzzyLogicStatementParser(this);
+            ps.ParseRule(ruleStatement);
         }
 
         public static FuzzyTermDecorator<FuzzyOperatorAnd> And(IFuzzyTerm lhs, IFuzzyTerm rhs)

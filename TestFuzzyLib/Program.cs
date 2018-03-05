@@ -19,7 +19,7 @@ namespace TestFuzzyLib
             var enemyWrapped = new Enemy();
             var fo = new ObservableFuzzyObject<Enemy>(enemyWrapped, module);
 
-            var parser = new FuzzyLogicStatementParser(module);
+            //var parser = new FuzzyLogicStatementParser(module);
 
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(GetResourceTextFile("foo.xml"));
@@ -67,12 +67,14 @@ namespace TestFuzzyLib
             fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, new RightShoulderFuzzySet(50, 100, 75));
 
             // add a new rule via parsing
-            var ps = new FuzzyLogicStatementParser(fm);
+            //var ps = new FuzzyLogicStatementParser(fm);
 
-            ps.ParseRule("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
+            //ps.ParseRule("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
+
+            fm.AddRule("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
 
             // add a new rule using the building statements
-            fob.AddRule(
+            fm.AddRule(
                 FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Low"]),
                        FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Loads"]),
                        FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Okay"]))
@@ -80,13 +82,13 @@ namespace TestFuzzyLib
                 fob["Undesirable"]);
 
             // add a new rule using the expression wrappers
-            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Loads"]), fob["Desirable"]);
-            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
-            fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
+            fm.AddRule(fob.If("Target_Medium").And(fob["Ammo_Loads"]), fob["Desirable"]);
+            fm.AddRule(fob.If("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
+            fm.AddRule(fob.If("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
 
-            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Loads"]), fob["Desirable"]);
-            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Okay"]), fob["Undesirable"]);
-            fob.AddRule(fob.If("Target_Far").And(fob["Ammo_Low"]), fob["Undesirable"]);
+            fm.AddRule(fob.If("Target_Far").And(fob["Ammo_Loads"]), fob["Desirable"]);
+            fm.AddRule(fob.If("Target_Far").And(fob["Ammo_Okay"]), fob["Undesirable"]);
+            fm.AddRule(fob.If("Target_Far").And(fob["Ammo_Low"]), fob["Undesirable"]);
 
             var enemy = fob.Proxy;
             enemy.DistanceToTarget = 12;

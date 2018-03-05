@@ -29,15 +29,15 @@ namespace FuzzyLib.Object.Generic
             _fuzzyModule = module;
         }
 
-        public void AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
-        {
-            Module.AddRule(antecedent, consequence);
-        }
+        //public void AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
+        //{
+        //    Module.AddRule(antecedent, consequence);
+        //}
 
-        public void AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
-        {
-            Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
-        }
+        //public void AddRule<TAntecendent, TConsequence>(FuzzyTermDecorator<TAntecendent> antecedent, FuzzyTermDecorator<TConsequence> consequence) where TAntecendent : IFuzzyTerm where TConsequence : IFuzzyTerm
+        //{
+        //    Module.AddRule(antecedent.Wrapped, consequence.Wrapped);
+        //}
 
         public FuzzyTermDecorator<FuzzyTermProxy> If(string name)
         {

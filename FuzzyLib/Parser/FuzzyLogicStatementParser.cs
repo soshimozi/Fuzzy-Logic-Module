@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FuzzyLib.Parser
 {
-    public class FuzzyLogicStatementParser : StatementParser
+    class FuzzyLogicStatementParser : StatementParser
     {
         private readonly FuzzyModule _module;
         public FuzzyLogicStatementParser(FuzzyModule module) : base() => _module = module;
