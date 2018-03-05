@@ -2,12 +2,11 @@
 using System.IO;
 using System.Xml;
 using FuzzyLib;
-using FuzzyLib.Interfaces;
 using FuzzyLib.Object;
-using FuzzyLib.Observables;
 using FuzzyLib.Operators;
 using FuzzyLib.Sets;
-using Parser;
+using FuzzyLib.Parser.Xml;
+using FuzzyLib.Parser;
 
 namespace TestFuzzyLib
 {
@@ -16,17 +15,20 @@ namespace TestFuzzyLib
         static void Main(string[] args)
         {
             var module = new FuzzyModule();
-            var fo = new ObservableFuzzyObject<Enemy>(module);
 
-            var map = new CharCodeMap();
-            map.LoadXml(GetResourceTextFile("CharacterMap.xml"));
+            var enemyWrapped = new Enemy();
+            var fo = new ObservableFuzzyObject<Enemy>(enemyWrapped, module);
 
-            var parser = new FuzzyLogicStatementParser(module, map);
+            var parser = new FuzzyLogicStatementParser(module);
 
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(GetResourceTextFile("foo.xml"));
 
-            var xmlLoader = new FuzzyLogicXMLLoader<Enemy>(xmlDocument, parser, fo);
+            FuzzyLogicXMLLoader<Enemy>.LoadObjectFromXml(xmlDocument, fo);
+
+            enemyWrapped.DistanceToTarget = 23;
+
+            Console.WriteLine($"fo.distanceToTarget: {fo.Proxy.DistanceToTarget}");
 
             // set some variables
             var enemyProxy = fo.Proxy;
@@ -43,13 +45,6 @@ namespace TestFuzzyLib
             var fm = new FuzzyModule();
             var fob = new ObservableFuzzyObject<Enemy>(fm);
 
-
-
-            // TODO: use reflection to call DefineVariable based on type and decorated properties
-            fob.DefineVariable(p => p.DistanceToTarget);
-            fob.DefineVariable(p => p.AmmoStatus);
-            fob.DefineVariable(p => p.Desirability);
-            fob.DefineVariable(p => p.Skill);
 
             fob.DefineFuzzyTerm("Very_Skilled", p => p.Skill, new RightShoulderFuzzySet(20, 100, 80));
             fob.DefineFuzzyTerm("Skilled", p => p.Skill, new TriangleFuzzySet(10, 30, 20));
@@ -68,14 +63,15 @@ namespace TestFuzzyLib
             fob.DefineFuzzyTerm("Target_Far", p => p.DistanceToTarget, new RightShoulderFuzzySet( 150, 1000, 300));
 
             fob.DefineFuzzyTerm("Undesirable", p => p.Desirability, new LeftShoulderFuzzySet(0, 50, 25));
-            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, new TriangleFuzzySet( 25, 75, 50));
+            fob.DefineFuzzyTerm("Desirable", p => p.Desirability, new TriangleFuzzySet(25, 75, 50));
             fob.DefineFuzzyTerm("VeryDesirable", p => p.Desirability, new RightShoulderFuzzySet(50, 100, 75));
 
             // add a new rule via parsing
-            var ps = new FuzzyLogicStatementParser(fm, map);
+            var ps = new FuzzyLogicStatementParser(fm);
 
             ps.ParseRule("IF VERY(DistanceToTarget:Target_Far) THEN Desirability:VeryDesirable");
 
+            // add a new rule using the building statements
             fob.AddRule(
                 FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Low"]),
                        FuzzyOperator.Or(FuzzyOperator.And(fob["Target_Close"], fob["Ammo_Loads"]),
@@ -83,7 +79,7 @@ namespace TestFuzzyLib
                 ),
                 fob["Undesirable"]);
 
-
+            // add a new rule using the expression wrappers
             fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Loads"]), fob["Desirable"]);
             fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Okay"]), fob["VeryDesirable"]);
             fob.AddRule(fob.If("Target_Medium").And(fob["Ammo_Low"]), fob["Desirable"]);
@@ -96,7 +92,7 @@ namespace TestFuzzyLib
             enemy.DistanceToTarget = 12;
             enemy.AmmoStatus = 12;
 
-            // get result
+            // get result, first parameter is property to update, and second parameter is the method to use (average vs centroid)
             fob.DeFuzzify(p => p.Desirability, m => m.DeFuzzifyMaxAv());
             Console.WriteLine("First result: {0}", enemy.Desirability);
 

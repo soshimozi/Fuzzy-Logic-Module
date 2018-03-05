@@ -11,7 +11,7 @@ namespace FuzzyLib.Object.Generic
 {
     public class FuzzyObject<T>
     {
-        protected readonly FuzzyModule Module;
+        private readonly FuzzyModule _fuzzyModule;
         public T WrappedObject { get; set; }
 
         protected readonly Dictionary<string, FuzzyVariableReference> VariableReferences = new Dictionary<string, FuzzyVariableReference>();
@@ -21,12 +21,12 @@ namespace FuzzyLib.Object.Generic
         public FuzzyObject(T obj, FuzzyModule module)
         {
             WrappedObject = obj;
-            Module = module;
+            _fuzzyModule = module;
         }
 
         public FuzzyObject(FuzzyModule module)
         {
-            Module = module;
+            _fuzzyModule = module;
         }
 
         public void AddRule(IFuzzyTerm antecedent, IFuzzyTerm consequence)
@@ -42,6 +42,14 @@ namespace FuzzyLib.Object.Generic
         public FuzzyTermDecorator<FuzzyTermProxy> If(string name)
         {
             return FuzzySets.ContainsKey(name) ? new FuzzyTermDecorator<FuzzyTermProxy>(FuzzySets[name]) : null;
+        }
+
+        public FuzzyModule Module
+        {
+            get
+            {
+                return _fuzzyModule;
+            }
         }
 
 
@@ -60,10 +68,12 @@ namespace FuzzyLib.Object.Generic
         public void DefineFuzzyTerm<TProp>(string name, Expression<Func<T, TProp>> expr, IFuzzySetManifold set)
         {
             var pi = expr.GetPropertyInfo();
-            if (VariableReferences.ContainsKey(pi.Name) && !FuzzySets.ContainsKey(name))
-            {
-                FuzzySets.Add(name, VariableReferences[pi.Name].Variable.AddFuzzyTerm(name, set));
-            }
+
+            var variable = DefineVariable(expr);
+            if (variable == null) return;
+            if (FuzzySets.ContainsKey(name)) return;
+
+            FuzzySets.Add(name, variable.AddFuzzyTerm(name, set));
         }
 
         public void DefineFuzzyTermByName(string setName, string variableName, IFuzzySetManifold set)
@@ -100,7 +110,7 @@ namespace FuzzyLib.Object.Generic
             return VariableReferences.ContainsKey(name) ? VariableReferences[name].Variable : AddVariable(name, prop);
         }
 
-        public FuzzyVariable DefineVariable<TProp>(Expression<Func<T, TProp>> func)
+        private FuzzyVariable DefineVariable<TProp>(Expression<Func<T, TProp>> func)
         {
             var propertyInfo = func.GetPropertyInfo();
             var name = propertyInfo.Name;

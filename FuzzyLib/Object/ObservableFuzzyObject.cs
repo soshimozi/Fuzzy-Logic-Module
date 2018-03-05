@@ -8,11 +8,11 @@ namespace FuzzyLib.Object
 {
     public class ObservableFuzzyObject<T> : FuzzyObject<T> where T : MarshalByRefObject, INotifyPropertyChanged
     {
-        public ObservableFuzzyObject(T proxy, FuzzyModule module) : base(proxy, module)
+        public ObservableFuzzyObject(T target, FuzzyModule module) : base(target, module)
         {
-            Proxy = proxy;
+            Proxy = ObservableDynamicProxy<T>.Marshal(target);
 
-            proxy.PropertyChanged += (sender, args) =>
+            Proxy.PropertyChanged += (sender, args) =>
             {
                 var name = args.PropertyName;
 

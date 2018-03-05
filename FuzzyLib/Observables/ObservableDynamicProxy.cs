@@ -44,9 +44,11 @@ namespace FuzzyLib.Observables
         public static T Create(params object[] args)
         {
             var wrapped = (T)Activator.CreateInstance(typeof(T), args);
-            var interceptor = new ObservableDynamicProxy<T>(wrapped);
-            return (T)interceptor.GetTransparentProxy();
+            return Marshal(wrapped);
+            //var interceptor = new ObservableDynamicProxy<T>(wrapped);
+            //return (T)interceptor.GetTransparentProxy();
         }
+
 
         public override IMessage Invoke(IMessage msg)
         {

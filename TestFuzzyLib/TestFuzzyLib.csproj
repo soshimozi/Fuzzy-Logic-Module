@@ -46,10 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharCodeMap.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="FuzzyLogicXMLLoader.cs" />
-    <Compile Include="FuzzyLogicStatementParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -58,21 +55,12 @@
       <Project>{FBC799CC-0339-4B8E-AD7D-ACADBAC23E39}</Project>
       <Name>FuzzyLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Parser\Parser.csproj">
-      <Project>{bac2c4d5-0806-42b9-b3a8-ce463abc46e9}</Project>
-      <Name>Parser</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="foo.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="CharacterMap.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
