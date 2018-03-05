@@ -2,5 +2,6 @@
 [Dd]ebug
 [Bb]in
 [Oo]bj
-vs
+.vs
 *.user
+packages
