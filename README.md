@@ -111,5 +111,5 @@ In order to resolve values you must "defuzzify" the values using the Defuzzify m
  ```
  The above code will resolve the "fuzzy" input values and provide a concrete value on the output.  The value will be applied to the property in the first argument using the method in the second argument.  There are two methods available: MaxAverage and Centroid.
  
-##### Shapes
+## Shapes
 
